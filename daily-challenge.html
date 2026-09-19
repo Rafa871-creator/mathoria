@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Daily Challenge</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-page {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 35px;
+        }
+
+        .game-header h1 {
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .date {
+            color: #b98cff;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .challenge-box,
+        .result {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+        }
+
+        .challenge-number {
+            color: #aaaabd;
+            margin-bottom: 25px;
+        }
+
+        .challenge-number strong {
+            color: #b98cff;
+        }
+
+        .question {
+            font-size: 30px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .answer-input {
+            width: 220px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(185,140,255,0.4);
+            background: rgba(0,0,0,0.25);
+            color: white;
+            font-size: 22px;
+            text-align: center;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #b98cff;
+        }
+
+        .game-button {
+            display: block;
+            margin: 18px auto 0;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-weight: bold;
+        }
+
+        .result {
+            display: none;
+        }
+
+        .result h2 {
+            color: #b98cff;
+            margin-bottom: 20px;
+        }
+
+        .result p {
+            color: #aaaabd;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .earned-xp {
+            font-size: 28px;
+            font-weight: bold;
+            color: #b98cff;
+            margin: 20px 0;
+        }
+
+        .already-completed {
+            color: #aaaabd;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #b98cff;
+        }
+
+        @media (max-width: 600px) {
+            .question {
+                font-size: 24px;
+            }
+
+            .answer-input {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+    <main class="game-page">
+
+        <section class="game-header">
+            <div class="small-title">MATHORIA DAILY</div>
+
+            <h1>Daily Challenge</h1>
+
+            <p>
+                Ένα νέο μαθηματικό challenge κάθε μέρα.
+            </p>
+
+            <div class="date" id="date"></div>
+        </section>
+
+        <div class="challenge-box" id="challengeBox">
+
+            <div class="challenge-number">
+                DAILY CHALLENGE
+                <strong>#<span id="challengeNumber">1</span></strong>
+            </div>
+
+            <div class="question" id="question"></div>
+
+            <input
+                type="number"
+                id="answerInput"
+                class="answer-input"
+                placeholder="Απάντηση"
+                autocomplete="off"
+            >
+
+            <button
+                class="game-button"
+                id="submitButton"
+            >
+                Έλεγχος
+            </button>
+
+            <div
+                class="feedback"
+                id="feedback"
+            ></div>
+
+        </div>
+
+        <div class="result" id="result">
+
+            <h2>Daily Challenge ολοκληρώθηκε!</h2>
+
+            <p id="resultText"></p>
+
+            <div class="earned-xp">
+                +<span id="earnedXP">25</span> XP
+            </div>
+
+            <p class="already-completed">
+                Επίστρεψε αύριο για το επόμενο challenge.
+            </p>
+
+        </div>
+
+        <a href="games.html" class="back-link">
+            ← Επιστροφή στα παιχνίδια
+        </a>
+
+    </main>
+
+    <script>
+
+        const challenges = [
+            {
+                question: "Πόσο κάνει 17 × 3;",
+                answer: 51
+            },
+            {
+                question: "Πόσο κάνει 144 ÷ 12;",
+                answer: 12
+            },
+            {
+                question: "Πόσο κάνει 25% του 120;",
+                answer: 30
+            },
+            {
+                question: "Αν 4x = 36, πόσο είναι το x;",
+                answer: 9
+            },
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου με πλευρά 8 cm;",
+                answer: 32
+            },
+            {
+                question: "Πόσο κάνει 15²;",
+                answer: 225
+            },
+            {
+                question: "Πόσο κάνει 72 - 18 ÷ 3;",
+                answer: 66
+            }
+        ];
+
+
+        const today =
+            new Date();
+
+        const dateKey =
+            today.getFullYear() +
+            "-" +
+            String(today.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(today.getDate()).padStart(2, "0");
+
+
+        /*
+         * Χρησιμοποιούμε την ημερομηνία
+         * για να επιλέγεται διαφορετικό
+         * challenge κάθε μέρα.
+         */
+        function getChallengeIndex() {
+
+            const year =
+                today.getFullYear();
+
+            const month =
+                today.getMonth();
+
+            const day =
+                today.getDate();
+
+            return (
+                year +
+                month +
+                day
+            ) % challenges.length;
+        }
+
+
+        const challengeIndex =
+            getChallengeIndex();
+
+        const challenge =
+            challenges[challengeIndex];
+
+
+        document.getElementById(
+            "challengeNumber"
+        ).textContent =
+            challengeIndex + 1;
+
+
+        document.getElementById(
+            "question"
+        ).textContent =
+            challenge.question;
+
+
+        document.getElementById(
+            "date"
+        ).textContent =
+            dateKey;
+
+
+        const answerInput =
+            document.getElementById(
+                "answerInput"
+            );
+
+        const submitButton =
+            document.getElementById(
+                "submitButton"
+            );
+
+        const feedback =
+            document.getElementById(
+                "feedback"
+            );
+
+        const challengeBox =
+            document.getElementById(
+                "challengeBox"
+            );
+
+        const result =
+            document.getElementById(
+                "result"
+            );
+
+        const resultText =
+            document.getElementById(
+                "resultText"
+            );
+
+
+        const completedKey =
+            "mathoriaDaily_" + dateKey;
+
+
+        /*
+         * Ελέγχουμε αν το σημερινό
+         * challenge έχει ήδη ολοκληρωθεί.
+         */
+        if (
+            localStorage.getItem(
+                completedKey
+            )
+        ) {
+
+            challengeBox.style.display =
+                "none";
+
+            result.style.display =
+                "block";
+
+            resultText.textContent =
+                "Έχεις ήδη ολοκληρώσει το σημερινό challenge και έχεις κερδίσει το XP του.";
+        }
+
+
+        function submitAnswer() {
+
+            const answer =
+                Number(
+                    answerInput.value
+                );
+
+
+            if (
+                answerInput.value === ""
+            ) {
+
+                feedback.textContent =
+                    "Γράψε πρώτα την απάντησή σου.";
+
+                return;
+            }
+
+
+            if (
+                answer === challenge.answer
+            ) {
+
+                localStorage.setItem(
+                    completedKey,
+                    "true"
+                );
+
+                addXP(25);
+
+                challengeBox.style.display =
+                    "none";
+
+                result.style.display =
+                    "block";
+
+                resultText.textContent =
+                    "Σωστά! Έλυσες το σημερινό challenge και κέρδισες 25 XP.";
+
+            }
+            else {
+
+                feedback.textContent =
+                    "Όχι ακόμα. Δοκίμασε ξανά!";
+
+                answerInput.value = "";
+
+                answerInput.focus();
+            }
+
+        }
+
+
+        submitButton.addEventListener(
+            "click",
+            submitAnswer
+        );
+
+
+        answerInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+                    submitAnswer();
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>

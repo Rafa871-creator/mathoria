@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Quiz Γ΄ Γυμνασίου</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 25px 0;
+        }
+
+        .question {
+            font-size: 28px;
+            margin: 45px 0 30px;
+            line-height: 1.5;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .answer {
+            padding: 18px;
+            border: 1px solid rgba(185,140,255,0.35);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: rgba(185,140,255,0.12);
+            border-color: #b98cff;
+            transform: translateY(-3px);
+        }
+
+        .answer:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 20px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            display: none;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .restart:hover {
+            background: #d0b5ff;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="g-gymnasiou.html" class="back">
+            ← Γ΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Μαθηματικό Quiz</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button
+            class="restart"
+            id="restart"
+            onclick="restartGame()"
+        >
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+
+        const questions = [
+            {
+                question: "Λύσε το σύστημα: x + y = 10 και x - y = 2.",
+                answers: [
+                    "x = 6, y = 4",
+                    "x = 5, y = 5",
+                    "x = 4, y = 6",
+                    "x = 8, y = 2"
+                ],
+                correct: "x = 6, y = 4"
+            },
+
+            {
+                question: "Αν f(x) = 2x + 3, πόσο είναι το f(4);",
+                answers: [
+                    "7",
+                    "9",
+                    "11",
+                    "12"
+                ],
+                correct: "11"
+            },
+
+            {
+                question: "Ποια είναι η τετραγωνική ρίζα του 144;",
+                answers: [
+                    "10",
+                    "11",
+                    "12",
+                    "14"
+                ],
+                correct: "12"
+            },
+
+            {
+                question: "Ποιο είναι το εμβαδόν τριγώνου με βάση 8 cm και ύψος 5 cm;",
+                answers: [
+                    "20 cm²",
+                    "30 cm²",
+                    "40 cm²",
+                    "13 cm²"
+                ],
+                correct: "20 cm²"
+            },
+
+            {
+                question: "Ποια είναι η πιθανότητα να φέρεις 6 όταν ρίχνεις ένα κανονικό ζάρι;",
+                answers: [
+                    "1/2",
+                    "1/3",
+                    "1/6",
+                    "1/12"
+                ],
+                correct: "1/6"
+            },
+
+            {
+                question: "Πόσο είναι το 2⁵;",
+                answers: [
+                    "10",
+                    "16",
+                    "25",
+                    "32"
+                ],
+                correct: "32"
+            },
+
+            {
+                question: "Ποιο είναι το άθροισμα των γωνιών ενός τριγώνου;",
+                answers: [
+                    "90°",
+                    "180°",
+                    "270°",
+                    "360°"
+                ],
+                correct: "180°"
+            },
+
+            {
+                question: "Λύσε το σύστημα: x + y = 14 και x - y = 6.",
+                answers: [
+                    "x = 8, y = 6",
+                    "x = 9, y = 5",
+                    "x = 10, y = 4",
+                    "x = 11, y = 3"
+                ],
+                correct: "x = 10, y = 4"
+            },
+
+            {
+                question: "Ποια είναι η διάμετρος κύκλου με ακτίνα 7 cm;",
+                answers: [
+                    "7 cm",
+                    "12 cm",
+                    "14 cm",
+                    "21 cm"
+                ],
+                correct: "14 cm"
+            },
+
+            {
+                question: "Αν f(x) = x², πόσο είναι το f(5);",
+                answers: [
+                    "10",
+                    "15",
+                    "20",
+                    "25"
+                ],
+                correct: "25"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function shuffleAnswers(answers) {
+
+            const shuffled = [...answers];
+
+            for (let i = shuffled.length - 1; i > 0; i--) {
+
+                const j = Math.floor(Math.random() * (i + 1));
+
+                [shuffled[i], shuffled[j]] =
+                [shuffled[j], shuffled[i]];
+            }
+
+            return shuffled;
+        }
+
+        function showQuestion() {
+
+            const q = questions[currentQuestion];
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${currentQuestion + 1} από 10`;
+
+            document.getElementById("question").textContent =
+                q.question;
+
+            document.getElementById("result").textContent = "";
+
+            const answersDiv =
+                document.getElementById("answers");
+
+            answersDiv.innerHTML = "";
+
+            const shuffledAnswers =
+                shuffleAnswers(q.answers);
+
+            shuffledAnswers.forEach(answer => {
+
+                const button =
+                    document.createElement("button");
+
+                button.className = "answer";
+                button.textContent = answer;
+
+                button.onclick = function() {
+                    checkAnswer(answer);
+                };
+
+                answersDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(answer) {
+
+            const q = questions[currentQuestion];
+
+            document.querySelectorAll(".answer").forEach(button => {
+                button.disabled = true;
+            });
+
+            if (answer === q.correct) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${q.correct}.`;
+            }
+
+            document.getElementById("score").textContent =
+                score;
+
+            setTimeout(() => {
+
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+
+                    showQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το Quiz ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answers").innerHTML = "";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            currentQuestion = 0;
+            score = 0;
+
+            document.getElementById("score").textContent =
+                score;
+
+            document.getElementById("restart").style.display =
+                "none";
+
+            showQuestion();
+        }
+
+        showQuestion();
+
+    </script>
+
+</body>
+</html>

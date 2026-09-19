@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Εξισώσεις</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 750px;
+            margin: 70px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 42px;
+            margin: 45px 0 30px;
+        }
+
+        #answer {
+            width: 220px;
+            padding: 15px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answer:focus {
+            border-color: #b98cff;
+        }
+
+        .submit-btn,
+        .restart-btn {
+            margin-top: 20px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .restart-btn:hover {
+            background: #d0b5ff;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-top: 20px;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart-btn {
+            display: none;
+        }
+
+        .hint {
+            margin-top: 15px;
+            color: #77778c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="b-gymnasiou.html" class="back">
+            ← Β΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Εξισώσεις</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <input
+            type="number"
+            id="answer"
+            placeholder="Τιμή του x"
+        >
+
+        <div class="hint">
+            Βρες την τιμή του x.
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswer()">
+            Απάντηση
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart-btn" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionNumber = 1;
+        let score = 0;
+        let correctAnswer = 0;
+
+        const questions = [
+            { question: "x + 5 = 12", answer: 7 },
+            { question: "x - 4 = 9", answer: 13 },
+            { question: "2x = 16", answer: 8 },
+            { question: "3x = 21", answer: 7 },
+            { question: "x + 8 = 20", answer: 12 },
+            { question: "x - 7 = 5", answer: 12 },
+            { question: "4x = 28", answer: 7 },
+            { question: "5x = 45", answer: 9 },
+            { question: "2x + 3 = 13", answer: 5 },
+            { question: "3x - 6 = 15", answer: 7 }
+        ];
+
+        function createQuestion() {
+
+            const current = questions[questionNumber - 1];
+
+            correctAnswer = current.answer;
+
+            document.getElementById("question").textContent =
+                current.question + "  →  x = ?";
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionNumber} από 10`;
+
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+
+            const answer = Number(
+                document.getElementById("answer").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (answer === correctAnswer) {
+
+                score += 10;
+                addXP(10);
+
+                result.textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                result.textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν x = ${correctAnswer}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").disabled = true;
+            document.querySelector(".submit-btn").disabled = true;
+
+            setTimeout(() => {
+
+                questionNumber++;
+
+                if (questionNumber <= 10) {
+
+                    document.getElementById("answer").disabled = false;
+                    document.querySelector(".submit-btn").disabled = false;
+
+                    result.textContent = "";
+
+                    createQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το παιχνίδι ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answer").style.display = "none";
+            document.querySelector(".submit-btn").style.display = "none";
+            document.querySelector(".hint").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            questionNumber = 1;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").style.display =
+                "inline-block";
+
+            document.querySelector(".submit-btn").style.display =
+                "inline-block";
+
+            document.querySelector(".hint").style.display =
+                "block";
+
+            document.getElementById("answer").disabled = false;
+            document.querySelector(".submit-btn").disabled = false;
+
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("result").textContent = "";
+
+            createQuestion();
+        }
+
+        document.getElementById("answer").addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+
+            }
+        );
+
+        createQuestion();
+    </script>
+
+</body>
+</html>

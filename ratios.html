@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Αναλογίες & Ποσοστά</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 750px;
+            margin: 70px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 34px;
+            margin: 40px 0 30px;
+        }
+
+        #answer {
+            width: 220px;
+            padding: 15px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answer:focus {
+            border-color: #b98cff;
+        }
+
+        .submit-btn,
+        .restart-btn {
+            margin-top: 20px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .restart-btn:hover {
+            background: #d0b5ff;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-top: 20px;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart-btn {
+            display: none;
+        }
+
+        .hint {
+            margin-top: 15px;
+            color: #77778c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="b-gymnasiou.html" class="back">
+            ← Β΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Αναλογίες & Ποσοστά</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <input
+            type="number"
+            id="answer"
+            placeholder="Η απάντησή σου"
+        >
+
+        <div class="hint">
+            Γράψε μόνο τον αριθμό.
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswer()">
+            Απάντηση
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart-btn" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionNumber = 1;
+        let score = 0;
+        let correctAnswer = 0;
+
+        const questions = [
+            {
+                question: "Το 20% του 50 είναι;",
+                answer: 10
+            },
+            {
+                question: "Το 10% του 80 είναι;",
+                answer: 8
+            },
+            {
+                question: "Το 25% του 100 είναι;",
+                answer: 25
+            },
+            {
+                question: "Το 50% του 60 είναι;",
+                answer: 30
+            },
+            {
+                question: "Το 10% του 200 είναι;",
+                answer: 20
+            },
+            {
+                question: "Αν 2 τετράδια κοστίζουν 6€, πόσο κοστίζουν 5;",
+                answer: 15
+            },
+            {
+                question: "Το 30% του 90 είναι;",
+                answer: 27
+            },
+            {
+                question: "Το 75% του 40 είναι;",
+                answer: 30
+            },
+            {
+                question: "Αν 3 κιλά κοστίζουν 12€, πόσο κοστίζουν 5 κιλά;",
+                answer: 20
+            },
+            {
+                question: "Το 40% του 150 είναι;",
+                answer: 60
+            }
+        ];
+
+        function createQuestion() {
+
+            const current = questions[questionNumber - 1];
+
+            correctAnswer = current.answer;
+
+            document.getElementById("question").textContent =
+                current.question;
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionNumber} από 10`;
+
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+
+            const answer = Number(
+                document.getElementById("answer").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (answer === correctAnswer) {
+
+                score += 10;
+                addXP(10);
+
+                result.textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                result.textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${correctAnswer}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").disabled = true;
+            document.querySelector(".submit-btn").disabled = true;
+
+            setTimeout(() => {
+
+                questionNumber++;
+
+                if (questionNumber <= 10) {
+
+                    document.getElementById("answer").disabled = false;
+                    document.querySelector(".submit-btn").disabled = false;
+
+                    result.textContent = "";
+
+                    createQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το παιχνίδι ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answer").style.display = "none";
+            document.querySelector(".submit-btn").style.display = "none";
+            document.querySelector(".hint").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            questionNumber = 1;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").style.display =
+                "inline-block";
+
+            document.querySelector(".submit-btn").style.display =
+                "inline-block";
+
+            document.querySelector(".hint").style.display =
+                "block";
+
+            document.getElementById("answer").disabled = false;
+            document.querySelector(".submit-btn").disabled = false;
+
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("result").textContent = "";
+
+            createQuestion();
+        }
+
+        document.getElementById("answer").addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+
+            }
+        );
+
+        createQuestion();
+    </script>
+
+</body>
+</html>

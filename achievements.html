@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Επιτεύγματα</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="progress.js"></script>
+
+    <style>
+
+        .achievements-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+        }
+
+
+        .achievements-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+
+        .achievements-header h1 {
+            margin-bottom: 15px;
+        }
+
+
+        .achievements-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+
+        .progress-box {
+            max-width: 700px;
+            margin: 0 auto 55px;
+            padding: 25px;
+            border: 1px solid rgba(185,140,255,0.25);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.04);
+            text-align: center;
+        }
+
+
+        .level {
+            font-size: 22px;
+            color: #b98cff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+
+        .xp-text {
+            color: #aaaabd;
+            margin-bottom: 15px;
+        }
+
+
+        .xp-bar {
+            width: 100%;
+            height: 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+
+        .xp-progress {
+            width: 0%;
+            height: 100%;
+            background: #b98cff;
+            border-radius: 20px;
+            transition: width 0.4s;
+        }
+
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+
+        .achievement {
+            padding: 28px 22px;
+            border: 1px solid rgba(185,140,255,0.22);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.04);
+            text-align: center;
+            transition: 0.25s;
+        }
+
+
+        .achievement:hover {
+            transform: translateY(-5px);
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.08);
+        }
+
+
+        .achievement-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+            filter: grayscale(1);
+            opacity: 0.4;
+        }
+
+
+        .achievement h2 {
+            color: #b98cff;
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+
+        .achievement p {
+            color: #aaaabd;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
+        .achievement.locked {
+            opacity: 0.55;
+        }
+
+
+        .achievement.unlocked {
+            border-color: rgba(185,140,255,0.6);
+            box-shadow:
+                0 10px 35px rgba(140,100,255,0.12);
+        }
+
+
+        .achievement.unlocked .achievement-icon {
+            filter: none;
+            opacity: 1;
+        }
+
+
+        .status {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            color: #77778c;
+            font-size: 12px;
+        }
+
+
+        .unlocked .status {
+            color: #b98cff;
+            background: rgba(185,140,255,0.1);
+        }
+
+
+        @media (max-width: 850px) {
+
+            .achievement-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <nav>
+
+        <a href="index.html" class="logo">
+            MATHORIA
+        </a>
+
+
+        <div>
+
+            <a href="index.html">
+                Αρχική
+            </a>
+
+            <a href="games.html">
+                Παιχνίδια
+            </a>
+
+            <a href="achievements.html">
+                Επιτεύγματα
+            </a>
+
+            <a href="profile.html">
+                Προφίλ
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="achievements-page">
+
+
+        <!-- HEADER -->
+
+        <section class="achievements-header">
+
+            <div class="small-title">
+                MATHORIA
+            </div>
+
+
+            <h1>
+                Επιτεύγματα
+            </h1>
+
+
+            <p>
+                Μάζεψε XP, ανέβασε επίπεδο και ξεκλείδωσε επιτεύγματα.
+            </p>
+
+        </section>
+
+
+        <!-- XP PROGRESS -->
+
+        <section class="progress-box">
+
+            <div class="level">
+                Level <span id="level">1</span>
+            </div>
+
+
+            <div class="xp-text">
+
+                <span id="xp">0</span>
+                /
+                <span id="nextXp">100</span>
+                XP
+
+            </div>
+
+
+            <div class="xp-bar">
+
+                <div
+                    class="xp-progress"
+                    id="xpProgress"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACHIEVEMENTS -->
+
+        <section class="achievement-grid">
+
+
+            <!-- WELCOME -->
+
+            <div
+                class="achievement unlocked"
+                id="achievementWelcome"
+            >
+
+                <div class="achievement-icon">
+                    🌟
+                </div>
+
+
+                <h2>
+                    Καλώς ήρθες!
+                </h2>
+
+
+                <p>
+                    Ξεκίνησε το μαθηματικό σου ταξίδι στο MATHORIA.
+                </p>
+
+
+                <span class="status">
+                    Ξεκλειδώθηκε
+                </span>
+
+            </div>
+
+
+            <!-- PERFECT SCORE -->
+
+            <div
+                class="achievement locked"
+                id="achievementPerfect"
+            >
+
+                <div class="achievement-icon">
+                    🎯
+                </div>
+
+
+                <h2>
+                    Τέλειο Σκορ
+                </h2>
+
+
+                <p>
+                    Κάνε 10/10 σε ένα παιχνίδι.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- FIRST GAME -->
+
+            <div
+                class="achievement locked"
+                id="achievementFirst"
+            >
+
+                <div class="achievement-icon">
+                    ⚡
+                </div>
+
+
+                <h2>
+                    Πρώτη Νίκη
+                </h2>
+
+
+                <p>
+                    Ολοκλήρωσε το πρώτο σου παιχνίδι.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- FIVE GAMES -->
+
+            <div
+                class="achievement locked"
+                id="achievementFive"
+            >
+
+                <div class="achievement-icon">
+                    📚
+                </div>
+
+
+                <h2>
+                    Μαθητής
+                </h2>
+
+
+                <p>
+                    Ολοκλήρωσε 5 διαφορετικά παιχνίδια.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- TEN GAMES -->
+
+            <div
+                class="achievement locked"
+                id="achievementTen"
+            >
+
+                <div class="achievement-icon">
+                    🧠
+                </div>
+
+
+                <h2>
+                    Μαθηματικός
+                </h2>
+
+
+                <p>
+                    Ολοκλήρωσε 10 διαφορετικά παιχνίδια.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- 100 XP -->
+
+            <div
+                class="achievement locked"
+                id="achievement100"
+            >
+
+                <div class="achievement-icon">
+                    💜
+                </div>
+
+
+                <h2>
+                    100 XP
+                </h2>
+
+
+                <p>
+                    Κέρδισε συνολικά 100 XP.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- 500 XP -->
+
+            <div
+                class="achievement locked"
+                id="achievement500"
+            >
+
+                <div class="achievement-icon">
+                    🏆
+                </div>
+
+
+                <h2>
+                    500 XP
+                </h2>
+
+
+                <p>
+                    Κέρδισε συνολικά 500 XP.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- STREAK -->
+
+            <div
+                class="achievement locked"
+                id="achievementStreak"
+            >
+
+                <div class="achievement-icon">
+                    🔥
+                </div>
+
+
+                <h2>
+                    Σερί
+                </h2>
+
+
+                <p>
+                    Παίξε MATHORIA για 3 συνεχόμενες ημέρες.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+            <!-- LEVEL 10 -->
+
+            <div
+                class="achievement locked"
+                id="achievementLevel10"
+            >
+
+                <div class="achievement-icon">
+                    👑
+                </div>
+
+
+                <h2>
+                    Master
+                </h2>
+
+
+                <p>
+                    Φτάσε στο Level 10.
+                </p>
+
+
+                <span class="status">
+                    Κλειδωμένο
+                </span>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // ------------------------------
+        // UPDATE XP
+        // ------------------------------
+
+        function updateProgress() {
+
+            const xp =
+                getXP();
+
+
+            const level =
+                getLevel(xp);
+
+
+            const nextXP =
+                getNextLevelXP(level);
+
+
+            document.getElementById(
+                "level"
+            ).textContent =
+                level;
+
+
+            document.getElementById(
+                "xp"
+            ).textContent =
+                xp;
+
+
+            document.getElementById(
+                "nextXp"
+            ).textContent =
+                nextXP;
+
+
+            let progress = 0;
+
+
+            if (level >= 10) {
+
+                progress = 100;
+
+            } else {
+
+                const currentLevelXP =
+                    MATHORIA_LEVELS[level - 1];
+
+
+                const levelRange =
+                    nextXP -
+                    currentLevelXP;
+
+
+                const currentProgress =
+                    xp -
+                    currentLevelXP;
+
+
+                progress =
+                    (
+                        currentProgress /
+                        levelRange
+                    ) * 100;
+
+            }
+
+
+            progress =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        progress
+                    )
+                );
+
+
+            document.getElementById(
+                "xpProgress"
+            ).style.width =
+                progress + "%";
+
+        }
+
+
+        // ------------------------------
+        // UNLOCK ACHIEVEMENT
+        // ------------------------------
+
+        function unlockAchievement(id) {
+
+            const achievement =
+                document.getElementById(id);
+
+
+            if (!achievement) {
+                return;
+            }
+
+
+            achievement.classList.remove(
+                "locked"
+            );
+
+
+            achievement.classList.add(
+                "unlocked"
+            );
+
+
+            const status =
+                achievement.querySelector(
+                    ".status"
+                );
+
+
+            if (status) {
+
+                status.textContent =
+                    "Ξεκλειδώθηκε";
+
+            }
+
+        }
+
+
+        // ------------------------------
+        // UPDATE ACHIEVEMENTS
+        // ------------------------------
+
+        function updateAchievementDisplay() {
+
+            // Perfect score
+
+            if (
+                localStorage.getItem(
+                    "achievement_perfect_score"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementPerfect"
+                );
+
+            }
+
+
+            // First game
+
+            if (
+                localStorage.getItem(
+                    "achievement_first_game"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementFirst"
+                );
+
+            }
+
+
+            // Five games
+
+            if (
+                localStorage.getItem(
+                    "achievement_five_games"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementFive"
+                );
+
+            }
+
+
+            // Ten games
+
+            if (
+                localStorage.getItem(
+                    "achievement_ten_games"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementTen"
+                );
+
+            }
+
+
+            // 100 XP
+
+            if (
+                localStorage.getItem(
+                    "achievement_100xp"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievement100"
+                );
+
+            }
+
+
+            // 500 XP
+
+            if (
+                localStorage.getItem(
+                    "achievement_500xp"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievement500"
+                );
+
+            }
+
+
+            // Streak
+
+            if (
+                localStorage.getItem(
+                    "achievement_streak"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementStreak"
+                );
+
+            }
+
+
+            // Level 10
+
+            if (
+                localStorage.getItem(
+                    "achievement_level10"
+                )
+            ) {
+
+                unlockAchievement(
+                    "achievementLevel10"
+                );
+
+            }
+
+        }
+
+
+        // ------------------------------
+        // START
+        // ------------------------------
+
+        updateProgress();
+
+        updateAchievementDisplay();
+
+    </script>
+
+
+</body>
+
+</html>

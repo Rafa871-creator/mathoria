@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Speed Math</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 35px;
+        }
+
+        .game-header h1 {
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .game-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            color: #aaaabd;
+        }
+
+        .stats strong {
+            color: #b98cff;
+            font-size: 20px;
+        }
+
+        .question {
+            font-size: 55px;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        #answer {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(185,140,255,0.4);
+            background: rgba(0,0,0,0.25);
+            color: white;
+            font-size: 22px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answer:focus {
+            border-color: #b98cff;
+        }
+
+        .game-button {
+            margin-top: 18px;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(185,140,255,0.25);
+        }
+
+        .feedback {
+            min-height: 28px;
+            margin-top: 20px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .timer {
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .result {
+            display: none;
+        }
+
+        .result h2 {
+            color: #b98cff;
+            margin-bottom: 15px;
+        }
+
+        .result-score {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .xp-earned {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #b98cff;
+        }
+
+        @media (max-width: 600px) {
+            .question {
+                font-size: 40px;
+            }
+
+            .game-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+    <main class="game-page">
+
+        <section class="game-header">
+            <div class="small-title">MATHORIA ARCADE</div>
+
+            <h1>Speed Math</h1>
+
+            <p>
+                Λύσε όσο περισσότερες πράξεις μπορείς πριν τελειώσει ο χρόνος!
+            </p>
+        </section>
+
+        <div class="game-box" id="gameBox">
+
+            <div class="stats">
+                <div>
+                    Σκορ:
+                    <strong id="score">0</strong>
+                </div>
+
+                <div>
+                    Χρόνος:
+                    <strong class="timer" id="timer">30</strong>
+                </div>
+            </div>
+
+            <div class="question" id="question">
+                5 + 3
+            </div>
+
+            <input
+                type="number"
+                id="answer"
+                placeholder="Απάντηση"
+                autocomplete="off"
+            >
+
+            <br>
+
+            <button class="game-button" id="submitButton">
+                Απάντηση
+            </button>
+
+            <div class="feedback" id="feedback"></div>
+
+        </div>
+
+        <div class="result" id="result">
+
+            <h2>Ο χρόνος τελείωσε!</h2>
+
+            <div class="result-score">
+                <span id="finalScore">0</span> σωστές
+            </div>
+
+            <p class="xp-earned">
+                Κέρδισες <strong id="earnedXP">0</strong> XP
+            </p>
+
+            <button class="game-button" onclick="startGame()">
+                Παίξε ξανά
+            </button>
+
+        </div>
+
+        <a href="games.html" class="back-link">
+            ← Επιστροφή στα παιχνίδια
+        </a>
+
+    </main>
+
+    <script>
+
+        let score = 0;
+        let timeLeft = 30;
+        let correctAnswer = 0;
+        let timerInterval;
+        let gameRunning = false;
+
+        const questionElement =
+            document.getElementById("question");
+
+        const answerElement =
+            document.getElementById("answer");
+
+        const scoreElement =
+            document.getElementById("score");
+
+        const timerElement =
+            document.getElementById("timer");
+
+        const feedbackElement =
+            document.getElementById("feedback");
+
+        const gameBox =
+            document.getElementById("gameBox");
+
+        const result =
+            document.getElementById("result");
+
+        const finalScore =
+            document.getElementById("finalScore");
+
+        const earnedXP =
+            document.getElementById("earnedXP");
+
+
+        function generateQuestion() {
+
+            const operations = ["+", "-", "×"];
+
+            const operation =
+                operations[
+                    Math.floor(
+                        Math.random() * operations.length
+                    )
+                ];
+
+            let number1;
+            let number2;
+
+            if (operation === "+") {
+
+                number1 =
+                    Math.floor(
+                        Math.random() * 30
+                    ) + 1;
+
+                number2 =
+                    Math.floor(
+                        Math.random() * 30
+                    ) + 1;
+
+                correctAnswer =
+                    number1 + number2;
+
+            }
+
+            else if (operation === "-") {
+
+                number1 =
+                    Math.floor(
+                        Math.random() * 30
+                    ) + 1;
+
+                number2 =
+                    Math.floor(
+                        Math.random() * number1
+                    ) + 1;
+
+                correctAnswer =
+                    number1 - number2;
+
+            }
+
+            else {
+
+                number1 =
+                    Math.floor(
+                        Math.random() * 10
+                    ) + 1;
+
+                number2 =
+                    Math.floor(
+                        Math.random() * 10
+                    ) + 1;
+
+                correctAnswer =
+                    number1 * number2;
+            }
+
+            questionElement.textContent =
+                number1 + " " +
+                operation + " " +
+                number2;
+        }
+
+
+        function startGame() {
+
+            clearInterval(timerInterval);
+
+            score = 0;
+            timeLeft = 30;
+            gameRunning = true;
+
+            scoreElement.textContent = score;
+            timerElement.textContent = timeLeft;
+
+            feedbackElement.textContent = "";
+
+            gameBox.style.display = "block";
+            result.style.display = "none";
+
+            answerElement.value = "";
+            answerElement.focus();
+
+            generateQuestion();
+
+            timerInterval =
+                setInterval(() => {
+
+                    timeLeft--;
+
+                    timerElement.textContent =
+                        timeLeft;
+
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+
+                }, 1000);
+        }
+
+
+        function checkAnswer() {
+
+            if (!gameRunning) {
+                return;
+            }
+
+            const answer =
+                Number(answerElement.value);
+
+            if (
+                answerElement.value === ""
+            ) {
+                return;
+            }
+
+            if (answer === correctAnswer) {
+
+                score++;
+
+                scoreElement.textContent =
+                    score;
+
+                feedbackElement.textContent =
+                    "Σωστό!";
+
+                addXP(10);
+
+                generateQuestion();
+
+            }
+
+            else {
+
+                feedbackElement.textContent =
+                    "Λάθος!";
+
+                generateQuestion();
+            }
+
+            answerElement.value = "";
+            answerElement.focus();
+        }
+
+
+        function endGame() {
+
+            gameRunning = false;
+
+            clearInterval(timerInterval);
+
+            gameBox.style.display = "none";
+            result.style.display = "block";
+
+            finalScore.textContent =
+                score;
+
+            const xp =
+                score * 10;
+
+            earnedXP.textContent =
+                xp;
+        }
+
+
+        document
+            .getElementById("submitButton")
+            .addEventListener(
+                "click",
+                checkAnswer
+            );
+
+
+        answerElement.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+
+            }
+        );
+
+
+        startGame();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Game Hub</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .games-page {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 60px 20px 100px;
+        }
+
+        .games-header {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .games-header h1 {
+            margin-bottom: 15px;
+        }
+
+        .games-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 70px;
+        }
+
+        .category-card {
+            padding: 30px;
+            border: 1px solid rgba(185,140,255,0.25);
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            text-decoration: none;
+            color: white;
+            transition: 0.25s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-7px);
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.1);
+            box-shadow: 0 12px 40px rgba(140,100,255,0.18);
+        }
+
+        .category-icon {
+            font-size: 42px;
+            margin-bottom: 18px;
+        }
+
+        .category-card h2 {
+            color: #b98cff;
+            margin-bottom: 10px;
+        }
+
+        .category-card p {
+            color: #aaaabd;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .category-status {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(185,140,255,0.1);
+            color: #b98cff;
+            font-size: 12px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            color: #b98cff;
+            white-space: nowrap;
+        }
+
+        .section-line {
+            height: 1px;
+            flex: 1;
+            background: rgba(185,140,255,0.2);
+        }
+
+        .section-description {
+            color: #aaaabd;
+            margin-bottom: 25px;
+        }
+
+        .class-section {
+            margin-bottom: 60px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .game-card {
+            display: block;
+            padding: 25px;
+            border: 1px solid rgba(185,140,255,0.25);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.04);
+            color: white;
+            text-decoration: none;
+            transition: 0.25s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-6px);
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.1);
+            box-shadow: 0 10px 35px rgba(140,100,255,0.15);
+        }
+
+        .game-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .game-card h3 {
+            color: #b98cff;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .game-card p {
+            color: #aaaabd;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .game-xp {
+            display: inline-block;
+            margin-top: 15px;
+            color: #b98cff;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .game-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .category-grid,
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                flex-wrap: wrap;
+            }
+
+            .section-line {
+                display: none;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+
+        <a href="index.html" class="logo">
+            MATHORIA
+        </a>
+
+        <div>
+
+            <a href="index.html">
+                Αρχική
+            </a>
+
+            <a href="games.html">
+                Παιχνίδια
+            </a>
+
+            <a href="achievements.html">
+                Επιτεύγματα
+            </a>
+
+            <a href="profile.html">
+                Προφίλ
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="games-page">
+
+        <section class="games-header">
+
+            <div class="small-title">
+                MATHORIA GAME HUB
+            </div>
+
+            <h1>
+                Παιχνίδια
+            </h1>
+
+            <p>
+                Παίξε. Λύσε. Κέρδισε XP.
+            </p>
+
+        </section>
+
+
+        <!-- GAME CATEGORIES -->
+
+        <section>
+
+            <div class="section-title">
+
+                <h2>
+                    Κατηγορίες
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+
+            <div class="category-grid">
+
+
+                <a href="#math-games" class="category-card">
+
+                    <div class="category-icon">
+                        📚
+                    </div>
+
+                    <h2>
+                        Μαθηματικά
+                    </h2>
+
+                    <p>
+                        Παιχνίδια βασισμένα στην ύλη της Α΄, Β΄ και Γ΄ Γυμνασίου.
+                    </p>
+
+                    <span class="category-status">
+                        16 παιχνίδια
+                    </span>
+
+                </a>
+
+
+                <a href="#arcade" class="category-card">
+
+                    <div class="category-icon">
+                        ⚡
+                    </div>
+
+                    <h2>
+                        Arcade
+                    </h2>
+
+                    <p>
+                        Γρήγορα και διασκεδαστικά παιχνίδια μαθηματικών με χρόνο και σκορ.
+                    </p>
+
+                    <span class="category-status">
+                        1 παιχνίδι
+                    </span>
+
+                </a>
+
+
+                <a href="#puzzles" class="category-card">
+
+                    <div class="category-icon">
+                        🧩
+                    </div>
+
+                    <h2>
+                        Puzzles
+                    </h2>
+
+                    <p>
+                        Λογικοί γρίφοι και μαθηματικά puzzles που δοκιμάζουν τη σκέψη σου.
+                    </p>
+
+                    <span class="category-status">
+                        2 παιχνίδια
+                    </span>
+
+                </a>
+
+
+                <a href="#challenges" class="category-card">
+
+                    <div class="category-icon">
+                        🎯
+                    </div>
+
+                    <h2>
+                        Challenges
+                    </h2>
+
+                    <p>
+                        Μικρές προκλήσεις που δοκιμάζουν τις μαθηματικές σου ικανότητες.
+                    </p>
+
+                    <span class="category-status">
+                        2 παιχνίδια
+                    </span>
+
+                </a>
+
+
+                <a href="#memory" class="category-card">
+
+                    <div class="category-icon">
+                        🧠
+                    </div>
+
+                    <h2>
+                        Memory
+                    </h2>
+
+                    <p>
+                        Ταίριαξε αριθμούς, πράξεις και μαθηματικές έννοιες.
+                    </p>
+
+                    <span class="category-status">
+                        1 παιχνίδι
+                    </span>
+
+                </a>
+
+
+                <a href="#daily" class="category-card">
+
+                    <div class="category-icon">
+                        🌟
+                    </div>
+
+                    <h2>
+                        Daily Challenge
+                    </h2>
+
+                    <p>
+                        Μία νέα μαθηματική πρόκληση κάθε μέρα.
+                    </p>
+
+                    <span class="category-status">
+                        Κάθε μέρα
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MATH GAMES
+        ========================= -->
+
+        <section id="math-games">
+
+            <div class="section-title">
+
+                <h2>
+                    📚 Μαθηματικά
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Παιχνίδια και ασκήσεις από την ύλη του Γυμνασίου.
+            </p>
+
+
+            <!-- Α΄ ΓΥΜΝΑΣΙΟΥ -->
+
+            <section class="class-section">
+
+                <div class="section-title">
+
+                    <h2>
+                        Α΄ Γυμνασίου
+                    </h2>
+
+                    <div class="section-line"></div>
+
+                </div>
+
+                <div class="game-grid">
+
+                    <a href="calculations.html" class="game-card">
+                        <div class="game-icon">⚡</div>
+                        <h3>Γρήγοροι Υπολογισμοί</h3>
+                        <p>Κάνε πράξεις όσο πιο γρήγορα μπορείς.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="fractions.html" class="game-card">
+                        <div class="game-icon">🧩</div>
+                        <h3>Κλάσματα</h3>
+                        <p>Εξάσκησε τις γνώσεις σου στα κλάσματα.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="geometry.html" class="game-card">
+                        <div class="game-icon">📐</div>
+                        <h3>Γεωμετρία</h3>
+                        <p>Σχήματα, γωνίες, εμβαδά και περίμετροι.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="quiz.html" class="game-card">
+                        <div class="game-icon">🎯</div>
+                        <h3>Μαθηματικό Quiz</h3>
+                        <p>Ένα quiz από διαφορετικές ενότητες.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- Β΄ ΓΥΜΝΑΣΙΟΥ -->
+
+            <section class="class-section">
+
+                <div class="section-title">
+
+                    <h2>
+                        Β΄ Γυμνασίου
+                    </h2>
+
+                    <div class="section-line"></div>
+
+                </div>
+
+                <div class="game-grid">
+
+                    <a href="algebra.html" class="game-card">
+                        <div class="game-icon">⚡</div>
+                        <h3>Αλγεβρικές Παραστάσεις</h3>
+                        <p>Απλοποίησε αλγεβρικές παραστάσεις.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="equations.html" class="game-card">
+                        <div class="game-icon">🧮</div>
+                        <h3>Εξισώσεις</h3>
+                        <p>Λύσε εξισώσεις και βρες τον άγνωστο.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="ratios.html" class="game-card">
+                        <div class="game-icon">📊</div>
+                        <h3>Αναλογίες & Ποσοστά</h3>
+                        <p>Εξάσκησε αναλογίες και ποσοστά.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="b-geometry.html" class="game-card">
+                        <div class="game-icon">📐</div>
+                        <h3>Γεωμετρία</h3>
+                        <p>Γεωμετρικές ασκήσεις και προβλήματα.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="functions.html" class="game-card">
+                        <div class="game-icon">📈</div>
+                        <h3>Συναρτήσεις</h3>
+                        <p>Υπολόγισε τιμές συναρτήσεων.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="b-quiz.html" class="game-card">
+                        <div class="game-icon">🎯</div>
+                        <h3>Μαθηματικό Quiz</h3>
+                        <p>Quiz από όλη την ύλη της Β΄ Γυμνασίου.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- Γ΄ ΓΥΜΝΑΣΙΟΥ -->
+
+            <section class="class-section">
+
+                <div class="section-title">
+
+                    <h2>
+                        Γ΄ Γυμνασίου
+                    </h2>
+
+                    <div class="section-line"></div>
+
+                </div>
+
+                <div class="game-grid">
+
+                    <a href="systems.html" class="game-card">
+                        <div class="game-icon">🧮</div>
+                        <h3>Συστήματα</h3>
+                        <p>Λύσε συστήματα εξισώσεων.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="g-functions.html" class="game-card">
+                        <div class="game-icon">📈</div>
+                        <h3>Συναρτήσεις</h3>
+                        <p>Εξάσκηση στις συναρτήσεις.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="roots.html" class="game-card">
+                        <div class="game-icon">√</div>
+                        <h3>Ρίζες & Δυνάμεις</h3>
+                        <p>Δυνάμεις, ρίζες και παραστάσεις.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="g-geometry.html" class="game-card">
+                        <div class="game-icon">📐</div>
+                        <h3>Γεωμετρία</h3>
+                        <p>Τρίγωνα, κύκλοι και θεωρήματα.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="probabilities.html" class="game-card">
+                        <div class="game-icon">🎲</div>
+                        <h3>Πιθανότητες</h3>
+                        <p>Υπολόγισε πιθανότητες.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                    <a href="g-quiz.html" class="game-card">
+                        <div class="game-icon">🎯</div>
+                        <h3>Μαθηματικό Quiz</h3>
+                        <p>Quiz από διαφορετικές ενότητες της Γ΄.</p>
+                        <span class="game-xp">+10 XP ανά σωστή απάντηση</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- =========================
+             ARCADE
+        ========================= -->
+
+        <section id="arcade" class="class-section">
+
+            <div class="section-title">
+
+                <h2>
+                    ⚡ Arcade
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Γρήγορα παιχνίδια όπου η ταχύτητα και η ακρίβεια μετράνε.
+            </p>
+
+            <div class="game-grid">
+
+                <a href="speed-math.html" class="game-card">
+
+                    <div class="game-icon">
+                        ⚡
+                    </div>
+
+                    <h3>
+                        Speed Math
+                    </h3>
+
+                    <p>
+                        Λύσε όσο περισσότερες πράξεις μπορείς μέσα σε 30 δευτερόλεπτα.
+                    </p>
+
+                    <span class="game-xp">
+                        +10 XP ανά σωστή απάντηση
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             PUZZLES
+        ========================= -->
+
+        <section id="puzzles" class="class-section">
+
+            <div class="section-title">
+
+                <h2>
+                    🧩 Puzzles
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Γρίφοι που χρειάζονται λογική, παρατηρητικότητα και μαθηματική σκέψη.
+            </p>
+
+            <div class="game-grid">
+
+                <a href="math-puzzle.html" class="game-card">
+
+                    <div class="game-icon">
+                        🧩
+                    </div>
+
+                    <h3>
+                        Math Puzzle
+                    </h3>
+
+                    <p>
+                        Λύσε μαθηματικούς γρίφους και βρες τις σωστές απαντήσεις.
+                    </p>
+
+                    <span class="game-xp">
+                        Έως +80 XP
+                    </span>
+
+                </a>
+
+                <a href="number-guess.html" class="game-card">
+
+                    <div class="game-icon">
+                        🔢
+                    </div>
+
+                    <h3>
+                        Number Guess
+                    </h3>
+
+                    <p>
+                        Μάντεψε τον κρυφό αριθμό από το 1 έως το 100.
+                    </p>
+
+                    <span class="game-xp">
+                        Έως +50 XP
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CHALLENGES
+        ========================= -->
+
+        <section id="challenges" class="class-section">
+
+            <div class="section-title">
+
+                <h2>
+                    🎯 Challenges
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Ολοκλήρωσε διαφορετικές μαθηματικές προκλήσεις και κέρδισε XP.
+            </p>
+
+            <div class="game-grid">
+
+                <a href="math-challenge.html" class="game-card">
+
+                    <div class="game-icon">
+                        🎯
+                    </div>
+
+                    <h3>
+                        Math Challenge
+                    </h3>
+
+                    <p>
+                        10 ερωτήσεις από διαφορετικές ενότητες μαθηματικών.
+                    </p>
+
+                    <span class="game-xp">
+                        Έως +100 XP
+                    </span>
+
+                </a>
+
+                <a href="daily-challenge.html" class="game-card">
+
+                    <div class="game-icon">
+                        🌟
+                    </div>
+
+                    <h3>
+                        Daily Challenge
+                    </h3>
+
+                    <p>
+                        Μία νέα μαθηματική πρόκληση κάθε μέρα.
+                    </p>
+
+                    <span class="game-xp">
+                        +25 XP κάθε μέρα
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MEMORY
+        ========================= -->
+
+        <section id="memory" class="class-section">
+
+            <div class="section-title">
+
+                <h2>
+                    🧠 Memory
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Θυμήσου τις κάρτες και ταίριαξε τις μαθηματικές πράξεις με τις απαντήσεις τους.
+            </p>
+
+            <div class="game-grid">
+
+                <a href="memory.html" class="game-card">
+
+                    <div class="game-icon">
+                        🧠
+                    </div>
+
+                    <h3>
+                        Math Memory
+                    </h3>
+
+                    <p>
+                        Ταίριαξε πράξεις και αποτελέσματα με όσο λιγότερες κινήσεις γίνεται.
+                    </p>
+
+                    <span class="game-xp">
+                        Έως +80 XP
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             DAILY
+        ========================= -->
+
+        <section id="daily" class="class-section">
+
+            <div class="section-title">
+
+                <h2>
+                    🌟 Daily Challenge
+                </h2>
+
+                <div class="section-line"></div>
+
+            </div>
+
+            <p class="section-description">
+                Ένα challenge κάθε μέρα. Μπες καθημερινά και κράτα το streak σου.
+            </p>
+
+            <div class="game-grid">
+
+                <a href="daily-challenge.html" class="game-card">
+
+                    <div class="game-icon">
+                        🌟
+                    </div>
+
+                    <h3>
+                        Today's Challenge
+                    </h3>
+
+                    <p>
+                        Λύσε τη σημερινή πρόκληση και κέρδισε XP.
+                    </p>
+
+                    <span class="game-xp">
+                        +25 XP
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Γεωμετρία Γ΄ Γυμνασίου</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 25px 0;
+        }
+
+        .question {
+            font-size: 28px;
+            margin: 35px 0;
+            line-height: 1.5;
+        }
+
+        .shape {
+            width: 180px;
+            height: 120px;
+            margin: 25px auto;
+            border: 3px solid #b98cff;
+            background: rgba(185,140,255,0.08);
+            display: none;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            margin: 25px auto;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 150px solid #b98cff;
+            display: none;
+        }
+
+        .circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #b98cff;
+            margin: 25px auto;
+            display: none;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 650px;
+            margin: 30px auto;
+        }
+
+        .answer {
+            padding: 18px;
+            border: 1px solid rgba(185,140,255,0.35);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: rgba(185,140,255,0.12);
+            border-color: #b98cff;
+            transform: translateY(-3px);
+        }
+
+        .answer:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 20px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            display: none;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .restart:hover {
+            background: #d0b5ff;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="g-gymnasiou.html" class="back">
+            ← Γ΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Γεωμετρία</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="shape" id="rectangle"></div>
+
+        <div class="triangle" id="triangle"></div>
+
+        <div class="circle" id="circle"></div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button
+            class="restart"
+            id="restart"
+            onclick="restartGame()"
+        >
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+
+        const questions = [
+            {
+                question: "Ποιο είναι το άθροισμα των γωνιών ενός τριγώνου;",
+                answers: ["90°", "180°", "270°", "360°"],
+                correct: "180°",
+                shape: "triangle"
+            },
+
+            {
+                question: "Ποιο είναι το εμβαδόν ορθογωνίου με μήκος 8 cm και πλάτος 5 cm;",
+                answers: ["13 cm²", "26 cm²", "40 cm²", "80 cm²"],
+                correct: "40 cm²",
+                shape: "rectangle"
+            },
+
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου με πλευρά 7 cm;",
+                answers: ["14 cm", "21 cm", "28 cm", "49 cm"],
+                correct: "28 cm",
+                shape: "rectangle"
+            },
+
+            {
+                question: "Ποια είναι η διάμετρος κύκλου με ακτίνα 6 cm;",
+                answers: ["3 cm", "6 cm", "12 cm", "18 cm"],
+                correct: "12 cm",
+                shape: "circle"
+            },
+
+            {
+                question: "Ποιο είναι το εμβαδόν τριγώνου με βάση 10 cm και ύψος 6 cm;",
+                answers: ["20 cm²", "30 cm²", "40 cm²", "60 cm²"],
+                correct: "30 cm²",
+                shape: "triangle"
+            },
+
+            {
+                question: "Ποια γωνία ονομάζεται ορθή;",
+                answers: ["45°", "60°", "90°", "180°"],
+                correct: "90°",
+                shape: "none"
+            },
+
+            {
+                question: "Ποιο είναι το εμβαδόν τετραγώνου με πλευρά 9 cm;",
+                answers: ["18 cm²", "36 cm²", "72 cm²", "81 cm²"],
+                correct: "81 cm²",
+                shape: "rectangle"
+            },
+
+            {
+                question: "Ποια είναι η περίμετρος ορθογωνίου με πλευρές 6 cm και 4 cm;",
+                answers: ["10 cm", "20 cm", "24 cm", "48 cm"],
+                correct: "20 cm",
+                shape: "rectangle"
+            },
+
+            {
+                question: "Ποιο είναι το εμβαδόν κύκλου με ακτίνα 2 cm; (π ≈ 3,14)",
+                answers: ["6,28 cm²", "12,56 cm²", "25,12 cm²", "50,24 cm²"],
+                correct: "12,56 cm²",
+                shape: "circle"
+            },
+
+            {
+                question: "Αν δύο ευθείες σχηματίζουν ορθή γωνία, πόσες μοίρες είναι η γωνία;",
+                answers: ["45°", "60°", "90°", "120°"],
+                correct: "90°",
+                shape: "none"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function showQuestion() {
+
+            const q = questions[currentQuestion];
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${currentQuestion + 1} από 10`;
+
+            document.getElementById("question").textContent =
+                q.question;
+
+            document.getElementById("result").textContent = "";
+
+            document.getElementById("rectangle").style.display = "none";
+            document.getElementById("triangle").style.display = "none";
+            document.getElementById("circle").style.display = "none";
+
+            if (q.shape === "rectangle") {
+                document.getElementById("rectangle").style.display = "block";
+            }
+
+            if (q.shape === "triangle") {
+                document.getElementById("triangle").style.display = "block";
+            }
+
+            if (q.shape === "circle") {
+                document.getElementById("circle").style.display = "block";
+            }
+
+            const answersDiv =
+                document.getElementById("answers");
+
+            answersDiv.innerHTML = "";
+
+            q.answers.forEach(answer => {
+
+                const button =
+                    document.createElement("button");
+
+                button.className = "answer";
+                button.textContent = answer;
+
+                button.onclick = function() {
+                    checkAnswer(answer);
+                };
+
+                answersDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(answer) {
+
+            const q = questions[currentQuestion];
+
+            document.querySelectorAll(".answer").forEach(button => {
+                button.disabled = true;
+            });
+
+            if (answer === q.correct) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${q.correct}.`;
+            }
+
+            document.getElementById("score").textContent =
+                score;
+
+            setTimeout(() => {
+
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+
+                    showQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Η Γεωμετρία ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answers").innerHTML = "";
+
+            document.getElementById("rectangle").style.display = "none";
+            document.getElementById("triangle").style.display = "none";
+            document.getElementById("circle").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            currentQuestion = 0;
+            score = 0;
+
+            document.getElementById("score").textContent =
+                score;
+
+            document.getElementById("restart").style.display =
+                "none";
+
+            showQuestion();
+        }
+
+        showQuestion();
+
+    </script>
+
+</body>
+</html>

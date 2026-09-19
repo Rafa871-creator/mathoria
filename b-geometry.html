@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Γεωμετρία Β΄ Γυμνασίου</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 750px;
+            margin: 70px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 32px;
+            margin: 40px 0 30px;
+        }
+
+        .shape {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            color: #b98cff;
+            font-weight: bold;
+            border: 3px solid #b98cff;
+            background: rgba(185,140,255,0.08);
+        }
+
+        #answer {
+            width: 220px;
+            padding: 15px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answer:focus {
+            border-color: #b98cff;
+        }
+
+        .submit-btn,
+        .restart-btn {
+            margin-top: 20px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .restart-btn:hover {
+            background: #d0b5ff;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-top: 20px;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart-btn {
+            display: none;
+        }
+
+        .hint {
+            margin-top: 15px;
+            color: #77778c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="b-gymnasiou.html" class="back">
+            ← Β΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Γεωμετρία</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="shape" id="shape"></div>
+
+        <input
+            type="number"
+            id="answer"
+            placeholder="Η απάντησή σου"
+        >
+
+        <div class="hint">
+            Γράψε μόνο τον αριθμό.
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswer()">
+            Απάντηση
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart-btn" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionNumber = 1;
+        let score = 0;
+        let correctAnswer = 0;
+
+        const questions = [
+            {
+                question: "Ποιο είναι το εμβαδόν τετραγώνου με πλευρά 5 cm;",
+                answer: 25,
+                type: "square",
+                value: "5 cm"
+            },
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου με πλευρά 6 cm;",
+                answer: 24,
+                type: "square",
+                value: "6 cm"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν ορθογωνίου 8 cm × 4 cm;",
+                answer: 32,
+                type: "rectangle",
+                value: "8 cm × 4 cm"
+            },
+            {
+                question: "Ποια είναι η περίμετρος ορθογωνίου 7 cm × 3 cm;",
+                answer: 20,
+                type: "rectangle",
+                value: "7 cm × 3 cm"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν τριγώνου με βάση 10 cm και ύψος 6 cm;",
+                answer: 30,
+                type: "triangle",
+                value: "β = 10 cm, υ = 6 cm"
+            },
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου με πλευρά 9 cm;",
+                answer: 36,
+                type: "square",
+                value: "9 cm"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν ορθογωνίου 12 cm × 5 cm;",
+                answer: 60,
+                type: "rectangle",
+                value: "12 cm × 5 cm"
+            },
+            {
+                question: "Ποια είναι η περίμετρος ορθογωνίου 10 cm × 4 cm;",
+                answer: 28,
+                type: "rectangle",
+                value: "10 cm × 4 cm"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν τριγώνου με βάση 8 cm και ύψος 5 cm;",
+                answer: 20,
+                type: "triangle",
+                value: "β = 8 cm, υ = 5 cm"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν τετραγώνου με πλευρά 10 cm;",
+                answer: 100,
+                type: "square",
+                value: "10 cm"
+            }
+        ];
+
+        function createShape(type, value) {
+
+            const shape = document.getElementById("shape");
+
+            shape.style.width = "220px";
+            shape.style.height = "150px";
+
+            if (type === "square") {
+
+                shape.style.width = "160px";
+                shape.style.height = "160px";
+                shape.innerHTML = value;
+
+            } else if (type === "rectangle") {
+
+                shape.innerHTML = value;
+
+            } else {
+
+                shape.style.width = "0";
+                shape.style.height = "0";
+                shape.style.background = "transparent";
+                shape.style.borderLeft = "110px solid transparent";
+                shape.style.borderRight = "110px solid transparent";
+                shape.style.borderBottom = "150px solid #b98cff";
+                shape.style.position = "relative";
+
+                shape.innerHTML = "";
+
+            }
+        }
+
+        function createQuestion() {
+
+            const current = questions[questionNumber - 1];
+
+            correctAnswer = current.answer;
+
+            document.getElementById("question").textContent =
+                current.question;
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionNumber} από 10`;
+
+            document.getElementById("answer").value = "";
+
+            createShape(current.type, current.value);
+
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+
+            const answer = Number(
+                document.getElementById("answer").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (answer === correctAnswer) {
+
+                score += 10;
+                addXP(10);
+
+                result.textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                result.textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${correctAnswer}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").disabled = true;
+            document.querySelector(".submit-btn").disabled = true;
+
+            setTimeout(() => {
+
+                questionNumber++;
+
+                if (questionNumber <= 10) {
+
+                    document.getElementById("answer").disabled = false;
+                    document.querySelector(".submit-btn").disabled = false;
+
+                    result.textContent = "";
+
+                    createQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το παιχνίδι ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("shape").style.display = "none";
+            document.getElementById("answer").style.display = "none";
+            document.querySelector(".submit-btn").style.display = "none";
+            document.querySelector(".hint").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            questionNumber = 1;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("shape").style.display = "flex";
+            document.getElementById("answer").style.display = "inline-block";
+            document.querySelector(".submit-btn").style.display = "inline-block";
+            document.querySelector(".hint").style.display = "block";
+
+            document.getElementById("answer").disabled = false;
+            document.querySelector(".submit-btn").disabled = false;
+
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("result").textContent = "";
+
+            createQuestion();
+        }
+
+        document.getElementById("answer").addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+
+            }
+        );
+
+        createQuestion();
+    </script>
+
+</body>
+</html>

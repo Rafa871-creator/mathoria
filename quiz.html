@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Μαθηματικό Quiz</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .quiz-container {
+            max-width: 750px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 20px 0;
+        }
+
+        .question {
+            font-size: 36px;
+            margin: 35px 0;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .answer {
+            padding: 20px;
+            border: 1px solid rgba(185,140,255,0.35);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: rgba(185,140,255,0.12);
+            border-color: #b98cff;
+            transform: translateY(-3px);
+        }
+
+        .answer:disabled {
+            cursor: default;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            margin-top: 25px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        .restart:hover {
+            background: #d0b5ff;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="a-gymnasiou.html" class="back">
+            ← Α΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="quiz-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Μαθηματικό Quiz</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart" id="restart" onclick="restartQuiz()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionIndex = 0;
+        let score = 0;
+        let questions = [];
+
+        function randomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function createQuestion() {
+
+            const a = randomNumber(2, 20);
+            const b = randomNumber(2, 20);
+            const type = randomNumber(1, 4);
+
+            let question;
+            let correct;
+
+            if (type === 1) {
+                question = `${a} + ${b} = ?`;
+                correct = a + b;
+            }
+
+            else if (type === 2) {
+                question = `${a + b} − ${b} = ?`;
+                correct = a;
+            }
+
+            else if (type === 3) {
+                question = `${a} × ${b} = ?`;
+                correct = a * b;
+            }
+
+            else {
+                question = `${a * b} ÷ ${b} = ?`;
+                correct = a;
+            }
+
+            let answers = [correct];
+
+            while (answers.length < 4) {
+
+                const wrong = correct + randomNumber(-10, 10);
+
+                if (
+                    wrong !== correct &&
+                    wrong >= 0 &&
+                    !answers.includes(wrong)
+                ) {
+                    answers.push(wrong);
+                }
+            }
+
+            answers.sort(() => Math.random() - 0.5);
+
+            return {
+                question: question,
+                correct: correct,
+                answers: answers
+            };
+        }
+
+        function startQuiz() {
+
+            questionIndex = 0;
+            score = 0;
+            questions = [];
+
+            for (let i = 0; i < 10; i++) {
+                questions.push(createQuestion());
+            }
+
+            document.getElementById("score").textContent = score;
+            document.getElementById("restart").style.display = "none";
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+
+            const current = questions[questionIndex];
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionIndex + 1} από 10`;
+
+            document.getElementById("question").textContent =
+                current.question;
+
+            document.getElementById("result").textContent = "";
+
+            const answersDiv = document.getElementById("answers");
+
+            answersDiv.innerHTML = "";
+
+            current.answers.forEach(answer => {
+
+                const button = document.createElement("button");
+
+                button.className = "answer";
+                button.textContent = answer;
+
+                button.onclick = function() {
+                    checkAnswer(answer);
+                };
+
+                answersDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(answer) {
+
+            const current = questions[questionIndex];
+
+            const buttons = document.querySelectorAll(".answer");
+
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+
+            if (answer === current.correct) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${current.correct}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            setTimeout(() => {
+
+                questionIndex++;
+
+                if (questionIndex < 10) {
+                    showQuestion();
+                } else {
+                    finishQuiz();
+                }
+
+            }, 1000);
+        }
+
+        function finishQuiz() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το Quiz ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answers").innerHTML = "";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display = "inline-block";
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        startQuiz();
+    </script>
+
+</body>
+</html>

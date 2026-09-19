@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Προφίλ</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .profile-container {
+            max-width: 1000px;
+            margin: 50px auto 80px;
+            padding: 20px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: rgba(185,140,255,0.12);
+            border: 2px solid #b98cff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+        }
+
+        .profile-header h1 {
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #aaaabd;
+            font-size: 17px;
+        }
+
+        .player-title {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 16px;
+            border: 1px solid rgba(185,140,255,0.35);
+            border-radius: 20px;
+            color: #b98cff;
+            background: rgba(185,140,255,0.08);
+            font-size: 14px;
+        }
+
+        .profile-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.25);
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .profile-card h2 {
+            color: #b98cff;
+            margin-bottom: 20px;
+        }
+
+        .level-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .level {
+            color: #b98cff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .xp {
+            color: #aaaabd;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 14px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #b98cff;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 22px 15px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(185,140,255,0.2);
+            border-radius: 14px;
+        }
+
+        .stat-number {
+            display: block;
+            color: #b98cff;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .stat-label {
+            color: #aaaabd;
+            font-size: 14px;
+        }
+
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .achievement {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(185,140,255,0.2);
+            border-radius: 14px;
+        }
+
+        .achievement-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .achievement h3 {
+            color: #b98cff;
+            margin-bottom: 7px;
+            font-size: 17px;
+        }
+
+        .achievement p {
+            color: #aaaabd;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .locked {
+            opacity: 0.4;
+        }
+
+        .classes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .class-card {
+            text-align: center;
+            padding: 22px;
+            border: 1px solid rgba(185,140,255,0.2);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .class-card h3 {
+            color: #b98cff;
+            margin-bottom: 8px;
+        }
+
+        .class-card p {
+            color: #aaaabd;
+            font-size: 14px;
+        }
+
+        .profile-settings {
+            display: grid;
+            gap: 20px;
+        }
+
+        .setting-group label {
+            display: block;
+            color: #aaaabd;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(185,140,255,0.25);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .name-input:focus {
+            border-color: #b98cff;
+        }
+
+        .avatar-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .avatar-option {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 1px solid rgba(185,140,255,0.25);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .avatar-option:hover {
+            transform: translateY(-3px);
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.1);
+        }
+
+        .avatar-option.selected {
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.18);
+            box-shadow: 0 0 15px rgba(185,140,255,0.2);
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(185,140,255,0.2);
+        }
+
+        .save-message {
+            text-align: center;
+            color: #b98cff;
+            font-size: 14px;
+            min-height: 18px;
+        }
+
+        @media (max-width: 700px) {
+            .stats,
+            .achievements,
+            .classes {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header h1 {
+                font-size: 34px;
+            }
+
+            .level-row {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+
+    <main class="profile-container">
+
+        <!-- PROFILE HEADER -->
+
+        <section class="profile-header">
+
+            <div class="avatar" id="profileAvatar">
+                ★
+            </div>
+
+            <h1 id="profileName">
+                Ο παίκτης του MATHORIA
+            </h1>
+
+            <p>
+                Το μαθηματικό σου ταξίδι
+            </p>
+
+            <div class="player-title" id="playerTitle">
+                Νέος Μαθητής
+            </div>
+
+        </section>
+
+
+        <!-- LEVEL -->
+
+        <section class="profile-card">
+
+            <h2>Επίπεδο</h2>
+
+            <div class="level-row">
+
+                <span class="level">
+                    Level <span id="profileLevel">1</span>
+                </span>
+
+                <span class="xp">
+                    <span id="profileXP">0</span> /
+                    <span id="profileNextXP">100</span> XP
+                </span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    id="profileProgress"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="profile-card">
+
+            <h2>Στατιστικά</h2>
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <span
+                        class="stat-number"
+                        id="statXP"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-label">
+                        Συνολικά XP
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span
+                        class="stat-number"
+                        id="statGames"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-label">
+                        Παιχνίδια ολοκληρωμένα
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span
+                        class="stat-number"
+                        id="statLevel"
+                    >
+                        1
+                    </span>
+
+                    <span class="stat-label">
+                        Level
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROFILE SETTINGS -->
+
+        <section class="profile-card">
+
+            <h2>Προφίλ παίκτη</h2>
+
+            <div class="profile-settings">
+
+                <div class="setting-group">
+
+                    <label for="playerNameInput">
+                        Όνομα παίκτη
+                    </label>
+
+                    <input
+                        type="text"
+                        id="playerNameInput"
+                        class="name-input"
+                        maxlength="20"
+                        placeholder="Γράψε το όνομά σου..."
+                    >
+
+                </div>
+
+
+                <div class="setting-group">
+
+                    <label>
+                        Διάλεξε avatar
+                    </label>
+
+                    <div class="avatar-options">
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="★"
+                        >
+                            ★
+                        </button>
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="◆"
+                        >
+                            ◆
+                        </button>
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="●"
+                        >
+                            ●
+                        </button>
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="▲"
+                        >
+                            ▲
+                        </button>
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="✦"
+                        >
+                            ✦
+                        </button>
+
+                        <button
+                            class="avatar-option"
+                            data-avatar="✧"
+                        >
+                            ✧
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="save-button"
+                    id="saveProfile"
+                >
+                    Αποθήκευση προφίλ
+                </button>
+
+                <div
+                    class="save-message"
+                    id="saveMessage"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CLASSES -->
+
+        <section class="profile-card">
+
+            <h2>Τάξεις</h2>
+
+            <div class="classes">
+
+                <div class="class-card">
+
+                    <h3>Α΄ Γυμνασίου</h3>
+
+                    <p>
+                        Μαθηματικά Α΄ Γυμνασίου
+                    </p>
+
+                </div>
+
+
+                <div class="class-card">
+
+                    <h3>Β΄ Γυμνασίου</h3>
+
+                    <p>
+                        Μαθηματικά Β΄ Γυμνασίου
+                    </p>
+
+                </div>
+
+
+                <div class="class-card">
+
+                    <h3>Γ΄ Γυμνασίου</h3>
+
+                    <p>
+                        Μαθηματικά Γ΄ Γυμνασίου
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACHIEVEMENTS -->
+
+        <section class="profile-card">
+
+            <h2>Επιτεύγματα</h2>
+
+            <div class="achievements">
+
+                <div class="achievement">
+
+                    <div class="achievement-icon">
+                        ★
+                    </div>
+
+                    <h3>Καλώς ήρθες!</h3>
+
+                    <p>
+                        Ξεκίνησες το ταξίδι σου στο MATHORIA.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="achievement locked"
+                    id="achievement100"
+                >
+
+                    <div class="achievement-icon">
+                        100
+                    </div>
+
+                    <h3>100 XP</h3>
+
+                    <p>
+                        Κέρδισε συνολικά 100 XP.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="achievement locked"
+                    id="achievement500"
+                >
+
+                    <div class="achievement-icon">
+                        500
+                    </div>
+
+                    <h3>500 XP</h3>
+
+                    <p>
+                        Κέρδισε συνολικά 500 XP.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="achievement locked"
+                    id="achievementLevel10"
+                >
+
+                    <div class="achievement-icon">
+                        10
+                    </div>
+
+                    <h3>Master</h3>
+
+                    <p>
+                        Φτάσε στο Level 10.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // ------------------------------
+        // PLAYER PROFILE
+        // ------------------------------
+
+        const playerNameInput =
+            document.getElementById(
+                "playerNameInput"
+            );
+
+        const profileName =
+            document.getElementById(
+                "profileName"
+            );
+
+        const profileAvatar =
+            document.getElementById(
+                "profileAvatar"
+            );
+
+        const saveProfile =
+            document.getElementById(
+                "saveProfile"
+            );
+
+        const saveMessage =
+            document.getElementById(
+                "saveMessage"
+            );
+
+
+        let selectedAvatar =
+            localStorage.getItem(
+                "mathoriaAvatar"
+            ) || "★";
+
+
+        // ------------------------------
+        // LOAD PROFILE
+        // ------------------------------
+
+        function loadProfile() {
+
+            const savedName =
+                localStorage.getItem(
+                    "mathoriaPlayerName"
+                );
+
+
+            if (savedName) {
+
+                playerNameInput.value =
+                    savedName;
+
+                profileName.textContent =
+                    savedName;
+
+            }
+
+
+            profileAvatar.textContent =
+                selectedAvatar;
+
+
+            document
+                .querySelectorAll(".avatar-option")
+                .forEach(function(button) {
+
+                    if (
+                        button.dataset.avatar ===
+                        selectedAvatar
+                    ) {
+
+                        button.classList.add(
+                            "selected"
+                        );
+
+                    }
+
+                });
+
+        }
+
+
+        // ------------------------------
+        // AVATAR SELECTION
+        // ------------------------------
+
+        document
+            .querySelectorAll(".avatar-option")
+            .forEach(function(button) {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        selectedAvatar =
+                            button.dataset.avatar;
+
+
+                        document
+                            .querySelectorAll(
+                                ".avatar-option"
+                            )
+                            .forEach(function(
+                                otherButton
+                            ) {
+
+                                otherButton
+                                    .classList
+                                    .remove(
+                                        "selected"
+                                    );
+
+                            });
+
+
+                        button.classList.add(
+                            "selected"
+                        );
+
+
+                        profileAvatar.textContent =
+                            selectedAvatar;
+
+                    }
+                );
+
+            });
+
+
+        // ------------------------------
+        // SAVE PROFILE
+        // ------------------------------
+
+        saveProfile.addEventListener(
+            "click",
+            function() {
+
+                let name =
+                    playerNameInput.value.trim();
+
+
+                if (name === "") {
+
+                    name =
+                        "Ο παίκτης του MATHORIA";
+
+                }
+
+
+                localStorage.setItem(
+                    "mathoriaPlayerName",
+                    name
+                );
+
+
+                localStorage.setItem(
+                    "mathoriaAvatar",
+                    selectedAvatar
+                );
+
+
+                profileName.textContent =
+                    name;
+
+                profileAvatar.textContent =
+                    selectedAvatar;
+
+
+                saveMessage.textContent =
+                    "Το προφίλ αποθηκεύτηκε!";
+
+
+                setTimeout(function() {
+
+                    saveMessage.textContent =
+                        "";
+
+                }, 2500);
+
+            }
+        );
+
+
+        // ------------------------------
+        // UPDATE PROFILE
+        // ------------------------------
+
+        function updateProfile() {
+
+            const xp =
+                getXP();
+
+            const level =
+                getLevel(xp);
+
+            const nextXP =
+                getNextLevelXP(level);
+
+
+            document.getElementById(
+                "profileLevel"
+            ).textContent =
+                level;
+
+
+            document.getElementById(
+                "profileXP"
+            ).textContent =
+                xp;
+
+
+            document.getElementById(
+                "profileNextXP"
+            ).textContent =
+                nextXP;
+
+
+            document.getElementById(
+                "statXP"
+            ).textContent =
+                xp;
+
+
+            document.getElementById(
+                "statGames"
+            ).textContent =
+                getCompletedGames();
+
+
+            document.getElementById(
+                "statLevel"
+            ).textContent =
+                level;
+
+
+            // --------------------------
+            // PLAYER TITLE
+            // --------------------------
+
+            let title =
+                "Νέος Μαθητής";
+
+
+            if (level >= 3) {
+                title = "Μαθητής";
+            }
+
+            if (level >= 5) {
+                title = "Μαθηματικός";
+            }
+
+            if (level >= 7) {
+                title = "Μαθηματική Διάνοια";
+            }
+
+            if (level >= 10) {
+                title = "MATHORIA Master";
+            }
+
+
+            document.getElementById(
+                "playerTitle"
+            ).textContent =
+                title;
+
+
+            // --------------------------
+            // XP PROGRESS
+            // --------------------------
+
+            let progress = 0;
+
+
+            if (level >= 10) {
+
+                progress = 100;
+
+            } else {
+
+                const currentLevelXP =
+                    MATHORIA_LEVELS[level - 1];
+
+
+                const levelRange =
+                    nextXP - currentLevelXP;
+
+
+                const currentProgress =
+                    xp - currentLevelXP;
+
+
+                progress =
+                    (
+                        currentProgress /
+                        levelRange
+                    ) * 100;
+
+            }
+
+
+            progress =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        progress
+                    )
+                );
+
+
+            document.getElementById(
+                "profileProgress"
+            ).style.width =
+                progress + "%";
+
+
+            // --------------------------
+            // ACHIEVEMENTS
+            // --------------------------
+
+            if (
+                localStorage.getItem(
+                    "achievement_100xp"
+                )
+            ) {
+
+                document.getElementById(
+                    "achievement100"
+                ).classList.remove(
+                    "locked"
+                );
+
+            }
+
+
+            if (
+                localStorage.getItem(
+                    "achievement_500xp"
+                )
+            ) {
+
+                document.getElementById(
+                    "achievement500"
+                ).classList.remove(
+                    "locked"
+                );
+
+            }
+
+
+            if (
+                localStorage.getItem(
+                    "achievement_level10"
+                )
+            ) {
+
+                document.getElementById(
+                    "achievementLevel10"
+                ).classList.remove(
+                    "locked"
+                );
+
+            }
+
+        }
+
+
+        // ------------------------------
+        // START
+        // ------------------------------
+
+        loadProfile();
+
+        updateProfile();
+
+    </script>
+
+</body>
+</html>

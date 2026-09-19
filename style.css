@@ -1,0 +1,149 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0b0b1a;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "+   ×   ÷   −   =   π   √   %";
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    letter-spacing: 45px;
+    line-height: 2;
+    color: rgba(140, 100, 255, 0.07);
+    transform: rotate(-15deg);
+    pointer-events: none;
+    z-index: -1;
+}
+
+nav {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 7%;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(11,11,26,0.9);
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #b98cff;
+    text-decoration: none;
+}
+
+nav a {
+    color: #ddd;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 15px;
+}
+
+nav a:hover {
+    color: #b98cff;
+}
+
+.hero {
+    text-align: center;
+    padding: 70px 20px 40px;
+}
+
+.small-title {
+    color: #a98cff;
+    letter-spacing: 3px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+.subtitle,
+.description {
+    color: #aaaabd;
+    font-size: 18px;
+}
+
+.games {
+    max-width: 1000px;
+    margin: 20px auto 80px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.game {
+    padding: 30px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(185,140,255,0.3);
+    border-radius: 18px;
+    text-decoration: none;
+    color: white;
+    transition: 0.25s;
+}
+
+.game:hover {
+    transform: translateY(-6px);
+    border-color: #b98cff;
+    background: rgba(185,140,255,0.1);
+    box-shadow: 0 10px 35px rgba(140,100,255,0.18);
+}
+
+.game-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.game h2 {
+    margin-bottom: 10px;
+    color: #b98cff;
+}
+
+.game p {
+    color: #aaaabd;
+    line-height: 1.5;
+}
+
+.back {
+    color: #bbb;
+    text-decoration: none;
+}
+
+.back:hover {
+    color: #b98cff;
+}
+
+@media (max-width: 700px) {
+    nav {
+        padding: 0 5%;
+    }
+
+    nav a {
+        margin-left: 10px;
+    }
+
+    .games {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 45px;
+    }
+}

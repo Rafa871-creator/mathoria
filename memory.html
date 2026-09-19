@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Math Memory</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-page {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 30px;
+        }
+
+        .game-header h1 {
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            max-width: 650px;
+            margin: 0 auto 25px;
+            color: #aaaabd;
+        }
+
+        .stats strong {
+            color: #b98cff;
+            font-size: 20px;
+        }
+
+        .memory-grid {
+            max-width: 650px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .card {
+            height: 120px;
+            perspective: 800px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.45s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner,
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(185,140,255,0.3);
+        }
+
+        .card-front {
+            background: rgba(255,255,255,0.05);
+            color: #b98cff;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: rgba(185,140,255,0.12);
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .card.matched .card-back {
+            border-color: #7ee787;
+            background: rgba(126,231,135,0.1);
+        }
+
+        .message {
+            min-height: 30px;
+            margin: 25px 0 10px;
+            font-weight: bold;
+            color: #b98cff;
+        }
+
+        .game-button {
+            margin-top: 20px;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            display: none;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .result h2 {
+            color: #b98cff;
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .result p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #b98cff;
+        }
+
+        @media (max-width: 650px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .card {
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .memory-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+    <main class="game-page">
+
+        <section class="game-header">
+            <div class="small-title">MATHORIA MEMORY</div>
+
+            <h1>Math Memory</h1>
+
+            <p>
+                Βρες τα ζευγάρια που ταιριάζουν!
+                Μια πράξη και η σωστή απάντησή της.
+            </p>
+        </section>
+
+        <div id="gameArea">
+
+            <div class="stats">
+                <div>
+                    Ζευγάρια:
+                    <strong>
+                        <span id="matches">0</span>/8
+                    </strong>
+                </div>
+
+                <div>
+                    Κινήσεις:
+                    <strong id="moves">0</strong>
+                </div>
+            </div>
+
+            <div class="memory-grid" id="memoryGrid"></div>
+
+            <div class="message" id="message"></div>
+
+        </div>
+
+        <div class="result" id="result">
+
+            <h2>Μπράβο!</h2>
+
+            <div class="result-score">
+                <span id="finalMoves">0</span> κινήσεις
+            </div>
+
+            <p>
+                Κέρδισες <strong id="earnedXP">80</strong> XP!
+            </p>
+
+            <button class="game-button" onclick="startGame()">
+                Παίξε ξανά
+            </button>
+
+        </div>
+
+        <a href="games.html" class="back-link">
+            ← Επιστροφή στα παιχνίδια
+        </a>
+
+    </main>
+
+    <script>
+
+        const pairs = [
+            ["7 × 2", "14"],
+            ["9 + 6", "15"],
+            ["8 × 3", "24"],
+            ["20 ÷ 4", "5"],
+            ["12 - 7", "5"],
+            ["6 × 4", "24"],
+            ["30 ÷ 5", "6"],
+            ["10 + 9", "19"]
+        ];
+
+        let cards = [];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matches = 0;
+        let moves = 0;
+
+
+        const grid =
+            document.getElementById("memoryGrid");
+
+        const matchesElement =
+            document.getElementById("matches");
+
+        const movesElement =
+            document.getElementById("moves");
+
+        const messageElement =
+            document.getElementById("message");
+
+        const gameArea =
+            document.getElementById("gameArea");
+
+        const result =
+            document.getElementById("result");
+
+        const finalMoves =
+            document.getElementById("finalMoves");
+
+        const earnedXP =
+            document.getElementById("earnedXP");
+
+
+        function createCards() {
+
+            cards = [];
+
+            pairs.forEach((pair, index) => {
+
+                cards.push({
+                    value: pair[0],
+                    pair: index
+                });
+
+                cards.push({
+                    value: pair[1],
+                    pair: index
+                });
+
+            });
+
+            cards.sort(
+                () => Math.random() - 0.5
+            );
+        }
+
+
+        function renderCards() {
+
+            grid.innerHTML = "";
+
+            cards.forEach((card, index) => {
+
+                const cardElement =
+                    document.createElement("div");
+
+                cardElement.className = "card";
+
+                cardElement.innerHTML = `
+                    <div class="card-inner">
+
+                        <div class="card-front">
+                            ?
+                        </div>
+
+                        <div class="card-back">
+                            ${card.value}
+                        </div>
+
+                    </div>
+                `;
+
+                cardElement.addEventListener(
+                    "click",
+                    () => flipCard(
+                        cardElement,
+                        index
+                    )
+                );
+
+                grid.appendChild(cardElement);
+
+            });
+        }
+
+
+        function flipCard(
+            cardElement,
+            index
+        ) {
+
+            if (
+                lockBoard ||
+                cardElement.classList.contains("flipped") ||
+                cardElement.classList.contains("matched")
+            ) {
+                return;
+            }
+
+            cardElement.classList.add("flipped");
+
+            if (!firstCard) {
+
+                firstCard = {
+                    element: cardElement,
+                    index: index
+                };
+
+                return;
+            }
+
+            secondCard = {
+                element: cardElement,
+                index: index
+            };
+
+            moves++;
+
+            movesElement.textContent =
+                moves;
+
+            checkMatch();
+        }
+
+
+        function checkMatch() {
+
+            const first =
+                cards[firstCard.index];
+
+            const second =
+                cards[secondCard.index];
+
+            if (first.pair === second.pair) {
+
+                firstCard.element.classList.add(
+                    "matched"
+                );
+
+                secondCard.element.classList.add(
+                    "matched"
+                );
+
+                matches++;
+
+                matchesElement.textContent =
+                    matches;
+
+                messageElement.textContent =
+                    "Σωστό ζευγάρι!";
+
+                addXP(10);
+
+                resetTurn();
+
+                if (matches === pairs.length) {
+                    finishGame();
+                }
+
+            }
+            else {
+
+                lockBoard = true;
+
+                messageElement.textContent =
+                    "Δεν ταιριάζουν!";
+
+                setTimeout(() => {
+
+                    firstCard.element.classList.remove(
+                        "flipped"
+                    );
+
+                    secondCard.element.classList.remove(
+                        "flipped"
+                    );
+
+                    resetTurn();
+
+                }, 800);
+
+            }
+        }
+
+
+        function resetTurn() {
+
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+        }
+
+
+        function finishGame() {
+
+            setTimeout(() => {
+
+                gameArea.style.display =
+                    "none";
+
+                result.style.display =
+                    "block";
+
+                finalMoves.textContent =
+                    moves;
+
+                earnedXP.textContent =
+                    pairs.length * 10;
+
+            }, 600);
+        }
+
+
+        function startGame() {
+
+            matches = 0;
+            moves = 0;
+
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            matchesElement.textContent =
+                "0";
+
+            movesElement.textContent =
+                "0";
+
+            messageElement.textContent =
+                "";
+
+            gameArea.style.display =
+                "block";
+
+            result.style.display =
+                "none";
+
+            createCards();
+            renderCards();
+        }
+
+
+        startGame();
+
+    </script>
+
+</body>
+</html>

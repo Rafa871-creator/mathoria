@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Quiz Β΄ Γυμνασίου</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 25px 0;
+        }
+
+        .question {
+            font-size: 34px;
+            margin: 40px 0;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .answer {
+            padding: 20px;
+            border: 1px solid rgba(185,140,255,0.35);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: rgba(185,140,255,0.12);
+            border-color: #b98cff;
+            transform: translateY(-3px);
+        }
+
+        .answer:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            margin-top: 25px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .restart:hover {
+            background: #d0b5ff;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="b-gymnasiou.html" class="back">
+            ← Β΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="quiz-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Μαθηματικό Quiz</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart" id="restart" onclick="restartQuiz()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionIndex = 0;
+        let score = 0;
+
+        const questions = [
+            {
+                question: "Πόσο είναι 3x + 5x;",
+                answers: ["8x", "15x", "2x", "8"],
+                correct: "8x"
+            },
+            {
+                question: "Λύσε: x + 7 = 15",
+                answers: ["6", "7", "8", "9"],
+                correct: "8"
+            },
+            {
+                question: "Πόσο είναι το 25% του 80;",
+                answers: ["15", "20", "25", "30"],
+                correct: "20"
+            },
+            {
+                question: "Ποιο είναι το εμβαδόν τετραγώνου με πλευρά 6 cm;",
+                answers: ["12 cm²", "24 cm²", "36 cm²", "42 cm²"],
+                correct: "36 cm²"
+            },
+            {
+                question: "Αν f(x) = 2x, ποιο είναι το f(5);",
+                answers: ["5", "7", "10", "12"],
+                correct: "10"
+            },
+            {
+                question: "Λύσε: 3x = 21",
+                answers: ["6", "7", "8", "9"],
+                correct: "7"
+            },
+            {
+                question: "Πόσο είναι 5x - 2x;",
+                answers: ["2x", "3x", "7x", "10x"],
+                correct: "3x"
+            },
+            {
+                question: "Ποιο είναι το 50% του 120;",
+                answers: ["40", "50", "60", "70"],
+                correct: "60"
+            },
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου με πλευρά 5 cm;",
+                answers: ["10 cm", "15 cm", "20 cm", "25 cm"],
+                correct: "20 cm"
+            },
+            {
+                question: "Λύσε: 2x + 4 = 14",
+                answers: ["4", "5", "6", "7"],
+                correct: "5"
+            }
+        ];
+
+        function startQuiz() {
+
+            questionIndex = 0;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+            document.getElementById("restart").style.display = "none";
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+
+            const current = questions[questionIndex];
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionIndex + 1} από 10`;
+
+            document.getElementById("question").textContent =
+                current.question;
+
+            document.getElementById("result").textContent = "";
+
+            const answersDiv = document.getElementById("answers");
+
+            answersDiv.innerHTML = "";
+
+            current.answers.forEach(answer => {
+
+                const button = document.createElement("button");
+
+                button.className = "answer";
+                button.textContent = answer;
+
+                button.onclick = function() {
+                    checkAnswer(answer);
+                };
+
+                answersDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(answer) {
+
+            const current = questions[questionIndex];
+
+            const buttons = document.querySelectorAll(".answer");
+
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+
+            if (answer === current.correct) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${current.correct}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            setTimeout(() => {
+
+                questionIndex++;
+
+                if (questionIndex < 10) {
+
+                    showQuestion();
+
+                } else {
+
+                    finishQuiz();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishQuiz() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το Quiz ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answers").innerHTML = "";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        startQuiz();
+    </script>
+
+</body>
+</html>
