@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Συστήματα</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 25px 0;
+        }
+
+        .question {
+            font-size: 32px;
+            margin: 40px 0;
+            line-height: 1.8;
+        }
+
+        .equation {
+            font-size: 28px;
+            color: #b98cff;
+            margin: 10px 0;
+        }
+
+        input {
+            width: 140px;
+            padding: 14px;
+            margin: 8px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #b98cff;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #d0b5ff;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 20px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="g-gymnasiou.html" class="back">
+            ← Γ΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Συστήματα</h1>
+
+        <div class="question-number" id="questionNumber">
+            Άσκηση 1 από 10
+        </div>
+
+        <div class="question">
+
+            <div class="equation" id="equation1">
+                x + y = 10
+            </div>
+
+            <div class="equation" id="equation2">
+                x - y = 2
+            </div>
+
+        </div>
+
+        <div>
+            <input type="number" id="xAnswer" placeholder="x">
+            <input type="number" id="yAnswer" placeholder="y">
+        </div>
+
+        <button onclick="checkAnswer()">
+            Έλεγχος
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+
+        const questions = [
+            { e1: "x + y = 10", e2: "x - y = 2", x: 6, y: 4 },
+            { e1: "x + y = 12", e2: "x - y = 4", x: 8, y: 4 },
+            { e1: "x + y = 14", e2: "x - y = 6", x: 10, y: 4 },
+            { e1: "x + y = 16", e2: "x - y = 2", x: 9, y: 7 },
+            { e1: "x + y = 18", e2: "x - y = 4", x: 11, y: 7 },
+            { e1: "x + y = 20", e2: "x - y = 8", x: 14, y: 6 },
+            { e1: "x + y = 15", e2: "x - y = 5", x: 10, y: 5 },
+            { e1: "x + y = 11", e2: "x - y = 1", x: 6, y: 5 },
+            { e1: "x + y = 22", e2: "x - y = 10", x: 16, y: 6 },
+            { e1: "x + y = 13", e2: "x - y = 3", x: 8, y: 5 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function showQuestion() {
+
+            const q = questions[currentQuestion];
+
+            document.getElementById("questionNumber").textContent =
+                `Άσκηση ${currentQuestion + 1} από 10`;
+
+            document.getElementById("equation1").textContent = q.e1;
+            document.getElementById("equation2").textContent = q.e2;
+
+            document.getElementById("xAnswer").value = "";
+            document.getElementById("yAnswer").value = "";
+
+            document.getElementById("result").textContent = "";
+
+            document.getElementById("xAnswer").focus();
+        }
+
+        function checkAnswer() {
+
+            const x = Number(document.getElementById("xAnswer").value);
+            const y = Number(document.getElementById("yAnswer").value);
+
+            const q = questions[currentQuestion];
+
+            if (
+                x === q.x &&
+                y === q.y
+            ) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+                document.getElementById("score").textContent = score;
+
+                setTimeout(() => {
+
+                    currentQuestion++;
+
+                    if (currentQuestion < questions.length) {
+
+                        showQuestion();
+
+                    } else {
+
+                        finishGame();
+
+                    }
+
+                }, 1000);
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    "Λάθος! Δοκίμασε ξανά.";
+            }
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Ολοκλήρωσες τα Συστήματα!";
+
+            document.getElementById("equation1").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("equation2").textContent = "";
+
+            document.getElementById("xAnswer").style.display = "none";
+            document.getElementById("yAnswer").style.display = "none";
+
+            document.querySelector("button").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            currentQuestion = 0;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("xAnswer").style.display = "inline-block";
+            document.getElementById("yAnswer").style.display = "inline-block";
+
+            document.querySelector("main button").style.display = "inline-block";
+
+            document.getElementById("restart").style.display = "none";
+
+            showQuestion();
+        }
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+
+        });
+
+        showQuestion();
+
+    </script>
+
+</body>
+</html>

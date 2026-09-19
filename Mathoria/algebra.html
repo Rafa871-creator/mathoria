@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Αλγεβρικές Παραστάσεις</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 750px;
+            margin: 70px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 42px;
+            margin: 40px 0 30px;
+        }
+
+        #answer {
+            width: 260px;
+            padding: 15px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        #answer:focus {
+            border-color: #b98cff;
+        }
+
+        .submit-btn,
+        .restart-btn {
+            margin-top: 20px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .restart-btn:hover {
+            background: #d0b5ff;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-top: 20px;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart-btn {
+            display: none;
+        }
+
+        .hint {
+            margin-top: 15px;
+            color: #77778c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="b-gymnasiou.html" class="back">
+            ← Β΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Αλγεβρικές Παραστάσεις</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <input
+            type="text"
+            id="answer"
+            placeholder="Γράψε την απάντηση"
+            autocomplete="off"
+        >
+
+        <div class="hint">
+            Παράδειγμα: 3x + 2x → 5x
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswer()">
+            Απάντηση
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart-btn" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionNumber = 1;
+        let score = 0;
+        let correctAnswer = "";
+
+        const questions = [
+            {
+                question: "3x + 5x = ?",
+                answer: "8x"
+            },
+            {
+                question: "7x - 2x = ?",
+                answer: "5x"
+            },
+            {
+                question: "4x + 3x - 2x = ?",
+                answer: "5x"
+            },
+            {
+                question: "10x - 6x = ?",
+                answer: "4x"
+            },
+            {
+                question: "2x + 7 + 3x = ?",
+                answer: "5x+7"
+            },
+            {
+                question: "8x - 3 + 2x = ?",
+                answer: "10x-3"
+            },
+            {
+                question: "5x + 4x - 3x = ?",
+                answer: "6x"
+            },
+            {
+                question: "9x - 4x + 2 = ?",
+                answer: "5x+2"
+            },
+            {
+                question: "6x + 2x - x = ?",
+                answer: "7x"
+            },
+            {
+                question: "12x - 5x + 3 = ?",
+                answer: "7x+3"
+            }
+        ];
+
+        function normalize(answer) {
+            return answer
+                .toLowerCase()
+                .replace(/\s+/g, "")
+                .replace(/−/g, "-");
+        }
+
+        function createQuestion() {
+
+            const current = questions[questionNumber - 1];
+
+            correctAnswer = current.answer;
+
+            document.getElementById("question").textContent =
+                current.question;
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionNumber} από 10`;
+
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+
+            const answer = normalize(
+                document.getElementById("answer").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (answer === normalize(correctAnswer)) {
+
+                score += 10;
+                addXP(10);
+
+                result.textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                result.textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${correctAnswer}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").disabled = true;
+            document.querySelector(".submit-btn").disabled = true;
+
+            setTimeout(() => {
+
+                questionNumber++;
+
+                if (questionNumber <= 10) {
+
+                    document.getElementById("answer").disabled = false;
+                    document.querySelector(".submit-btn").disabled = false;
+
+                    result.textContent = "";
+
+                    createQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το παιχνίδι ολοκληρώθηκε!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("answer").style.display = "none";
+            document.querySelector(".submit-btn").style.display = "none";
+            document.querySelector(".hint").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            questionNumber = 1;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("answer").style.display =
+                "inline-block";
+
+            document.querySelector(".submit-btn").style.display =
+                "inline-block";
+
+            document.querySelector(".hint").style.display =
+                "block";
+
+            document.getElementById("answer").disabled = false;
+            document.querySelector(".submit-btn").disabled = false;
+
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("result").textContent = "";
+
+            createQuestion();
+        }
+
+        document.getElementById("answer").addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+
+            }
+        );
+
+        createQuestion();
+    </script>
+
+</body>
+</html>

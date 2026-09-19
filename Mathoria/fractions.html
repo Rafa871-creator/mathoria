@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Κλάσματα</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 700px;
+            margin: 70px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 34px;
+            margin: 40px 0 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 55px;
+            font-size: 28px;
+            line-height: 1.1;
+        }
+
+        .fraction .numerator {
+            padding: 0 8px 5px;
+            border-bottom: 2px solid #b98cff;
+        }
+
+        .fraction .denominator {
+            padding: 5px 8px 0;
+        }
+
+        .operator {
+            color: #b98cff;
+            font-size: 30px;
+        }
+
+        .answer-fraction {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .answer-fraction input {
+            width: 100px;
+            padding: 14px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        .answer-fraction input:focus {
+            border-color: #b98cff;
+        }
+
+        .fraction-line {
+            width: 100px;
+            height: 2px;
+            background: #b98cff;
+            margin: 6px 0;
+        }
+
+        .submit-btn,
+        .restart-btn {
+            margin-top: 25px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover,
+        .restart-btn:hover {
+            background: #d0b5ff;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-top: 20px;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 20px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .restart-btn {
+            display: none;
+        }
+
+        .answer-fraction input:disabled {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="a-gymnasiou.html" class="back">
+            ← Α΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Κλάσματα</h1>
+
+        <div class="question-number" id="questionNumber">
+            Ερώτηση 1 από 10
+        </div>
+
+        <div class="question" id="question">
+            Φόρτωση...
+        </div>
+
+        <div class="answer-fraction">
+
+            <div>
+                <input
+                    type="number"
+                    id="numerator"
+                    placeholder="Αριθμητής"
+                >
+
+                <div class="fraction-line"></div>
+
+                <input
+                    type="number"
+                    id="denominator"
+                    placeholder="Παρονομαστής"
+                >
+            </div>
+
+        </div>
+
+        <button class="submit-btn" onclick="checkAnswer()">
+            Απάντηση
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button class="restart-btn" id="restart" onclick="restartGame()">
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+        let questionNumber = 1;
+        let score = 0;
+
+        let correctNumerator = 0;
+        let correctDenominator = 1;
+
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+
+            return a;
+        }
+
+        function simplify(numerator, denominator) {
+            const divisor = gcd(numerator, denominator);
+
+            return {
+                numerator: numerator / divisor,
+                denominator: denominator / divisor
+            };
+        }
+
+        function createFraction(numerator, denominator) {
+            return `
+                <span class="fraction">
+                    <span class="numerator">${numerator}</span>
+                    <span class="denominator">${denominator}</span>
+                </span>
+            `;
+        }
+
+        function createQuestion() {
+
+            let a = Math.floor(Math.random() * 9) + 1;
+            let b = Math.floor(Math.random() * 9) + 1;
+
+            let c = Math.floor(Math.random() * 9) + 1;
+            let d = Math.floor(Math.random() * 9) + 1;
+
+            let numerator = a * d + c * b;
+            let denominator = b * d;
+
+            const simplified = simplify(numerator, denominator);
+
+            correctNumerator = simplified.numerator;
+            correctDenominator = simplified.denominator;
+
+            document.getElementById("question").innerHTML =
+                createFraction(a, b) +
+                `<span class="operator">+</span>` +
+                createFraction(c, d) +
+                `<span class="operator">=</span>` +
+                `<span class="operator">?</span>`;
+
+            document.getElementById("questionNumber").textContent =
+                `Ερώτηση ${questionNumber} από 10`;
+
+            document.getElementById("numerator").value = "";
+            document.getElementById("denominator").value = "";
+
+            document.getElementById("numerator").focus();
+        }
+
+        function checkAnswer() {
+
+            const numerator = Number(
+                document.getElementById("numerator").value
+            );
+
+            const denominator = Number(
+                document.getElementById("denominator").value
+            );
+
+            const result = document.getElementById("result");
+
+            if (
+                numerator === correctNumerator &&
+                denominator === correctDenominator
+            ) {
+
+                score += 10;
+                addXP(10);
+
+                result.textContent =
+                    "Σωστό! +10 πόντοι";
+
+            } else {
+
+                result.textContent =
+                    `Λάθος! Η σωστή απάντηση ήταν ${correctNumerator}/${correctDenominator}.`;
+            }
+
+            document.getElementById("score").textContent = score;
+
+            document.getElementById("numerator").disabled = true;
+            document.getElementById("denominator").disabled = true;
+            document.querySelector(".submit-btn").disabled = true;
+
+            setTimeout(() => {
+
+                questionNumber++;
+
+                if (questionNumber <= 10) {
+
+                    document.getElementById("numerator").disabled = false;
+                    document.getElementById("denominator").disabled = false;
+                    document.querySelector(".submit-btn").disabled = false;
+
+                    result.textContent = "";
+
+                    createQuestion();
+
+                } else {
+
+                    finishGame();
+
+                }
+
+            }, 1200);
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Το παιχνίδι ολοκληρώθηκε!";
+
+            document.getElementById("question").innerHTML =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.querySelector(".answer-fraction").style.display = "none";
+            document.querySelector(".submit-btn").style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display = "inline-block";
+        }
+
+        function restartGame() {
+
+            questionNumber = 1;
+            score = 0;
+
+            document.getElementById("score").textContent = score;
+
+            document.querySelector(".answer-fraction").style.display = "flex";
+            document.querySelector(".submit-btn").style.display = "inline-block";
+
+            document.getElementById("numerator").disabled = false;
+            document.getElementById("denominator").disabled = false;
+            document.querySelector(".submit-btn").disabled = false;
+
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("result").textContent = "";
+
+            createQuestion();
+        }
+
+        createQuestion();
+    </script>
+
+</body>
+</html>

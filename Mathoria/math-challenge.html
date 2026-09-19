@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Math Challenge</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 35px;
+        }
+
+        .game-header h1 {
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .game-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            color: #aaaabd;
+        }
+
+        .stats strong {
+            color: #b98cff;
+            font-size: 20px;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .answer-button {
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(185,140,255,0.3);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .answer-button:hover {
+            transform: translateY(-3px);
+            border-color: #b98cff;
+            background: rgba(185,140,255,0.1);
+        }
+
+        .answer-button.correct {
+            border-color: #7ee787;
+            background: rgba(126,231,135,0.12);
+        }
+
+        .answer-button.wrong {
+            border-color: #ff6b6b;
+            background: rgba(255,107,107,0.12);
+        }
+
+        .feedback {
+            min-height: 30px;
+            margin-top: 25px;
+            font-weight: bold;
+        }
+
+        .result {
+            display: none;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+        }
+
+        .result h2 {
+            color: #b98cff;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 45px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .result p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .game-button {
+            margin-top: 25px;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #b98cff;
+        }
+
+        @media (max-width: 600px) {
+            .answers {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+    <main class="game-page">
+
+        <section class="game-header">
+            <div class="small-title">MATHORIA CHALLENGE</div>
+
+            <h1>Math Challenge</h1>
+
+            <p>
+                Απάντησε σωστά σε όσο περισσότερες ερωτήσεις μπορείς!
+            </p>
+        </section>
+
+        <div class="game-box" id="gameBox">
+
+            <div class="stats">
+                <div>
+                    Σκορ:
+                    <strong id="score">0</strong>
+                </div>
+
+                <div>
+                    Ερώτηση:
+                    <strong id="questionCount">1</strong>/10
+                </div>
+            </div>
+
+            <div class="question-number">
+                Ερώτηση
+            </div>
+
+            <div class="question" id="question">
+                Φόρτωση...
+            </div>
+
+            <div class="answers" id="answers"></div>
+
+            <div class="feedback" id="feedback"></div>
+
+        </div>
+
+        <div class="result" id="result">
+
+            <h2>Challenge ολοκληρώθηκε!</h2>
+
+            <div class="final-score">
+                <span id="finalScore">0</span>/10
+            </div>
+
+            <p>
+                Κέρδισες <strong id="earnedXP">0</strong> XP
+            </p>
+
+            <button class="game-button" onclick="startGame()">
+                Παίξε ξανά
+            </button>
+
+        </div>
+
+        <a href="games.html" class="back-link">
+            ← Επιστροφή στα παιχνίδια
+        </a>
+
+    </main>
+
+    <script>
+
+        const questions = [
+
+            {
+                question: "Πόσο κάνει 7 × 8;",
+                answers: ["54", "56", "64", "48"],
+                correct: 1
+            },
+
+            {
+                question: "Πόσο κάνει 144 ÷ 12;",
+                answers: ["10", "11", "12", "14"],
+                correct: 2
+            },
+
+            {
+                question: "Ποιο είναι το 25% του 80;",
+                answers: ["15", "20", "25", "30"],
+                correct: 1
+            },
+
+            {
+                question: "Πόσο κάνει 3² + 4²;",
+                answers: ["12", "25", "49", "7"],
+                correct: 1
+            },
+
+            {
+                question: "Αν x + 7 = 15, πόσο είναι το x;",
+                answers: ["6", "7", "8", "9"],
+                correct: 2
+            },
+
+            {
+                question: "Ποια είναι η τετραγωνική ρίζα του 81;",
+                answers: ["7", "8", "9", "10"],
+                correct: 2
+            },
+
+            {
+                question: "Πόσο είναι 2/5 + 1/5;",
+                answers: ["3/5", "2/10", "1/5", "4/5"],
+                correct: 0
+            },
+
+            {
+                question: "Ποια είναι η περίμετρος τετραγώνου πλευράς 6 cm;",
+                answers: ["12 cm", "18 cm", "24 cm", "36 cm"],
+                correct: 2
+            },
+
+            {
+                question: "Πόσο είναι 15 - 3 × 2;",
+                answers: ["24", "9", "12", "6"],
+                correct: 1
+            },
+
+            {
+                question: "Αν 3x = 21, πόσο είναι το x;",
+                answers: ["6", "7", "8", "9"],
+                correct: 1
+            }
+
+        ];
+
+
+        let currentQuestion = 0;
+        let score = 0;
+        let gameLocked = false;
+
+
+        const questionElement =
+            document.getElementById("question");
+
+        const answersElement =
+            document.getElementById("answers");
+
+        const scoreElement =
+            document.getElementById("score");
+
+        const questionCountElement =
+            document.getElementById("questionCount");
+
+        const feedbackElement =
+            document.getElementById("feedback");
+
+        const gameBox =
+            document.getElementById("gameBox");
+
+        const result =
+            document.getElementById("result");
+
+        const finalScore =
+            document.getElementById("finalScore");
+
+        const earnedXP =
+            document.getElementById("earnedXP");
+
+
+        function startGame() {
+
+            currentQuestion = 0;
+            score = 0;
+            gameLocked = false;
+
+            scoreElement.textContent = "0";
+
+            gameBox.style.display = "block";
+            result.style.display = "none";
+
+            showQuestion();
+        }
+
+
+        function showQuestion() {
+
+            gameLocked = false;
+
+            const question =
+                questions[currentQuestion];
+
+            questionElement.textContent =
+                question.question;
+
+            questionCountElement.textContent =
+                currentQuestion + 1;
+
+            feedbackElement.textContent = "";
+
+            answersElement.innerHTML = "";
+
+            question.answers.forEach(
+                (answer, index) => {
+
+                    const button =
+                        document.createElement("button");
+
+                    button.className =
+                        "answer-button";
+
+                    button.textContent =
+                        answer;
+
+                    button.onclick = () =>
+                        checkAnswer(
+                            index,
+                            button
+                        );
+
+                    answersElement.appendChild(
+                        button
+                    );
+
+                }
+            );
+        }
+
+
+        function checkAnswer(
+            selectedAnswer,
+            selectedButton
+        ) {
+
+            if (gameLocked) {
+                return;
+            }
+
+            gameLocked = true;
+
+            const question =
+                questions[currentQuestion];
+
+            const buttons =
+                document.querySelectorAll(
+                    ".answer-button"
+                );
+
+            if (
+                selectedAnswer ===
+                question.correct
+            ) {
+
+                score++;
+
+                scoreElement.textContent =
+                    score;
+
+                selectedButton.classList.add(
+                    "correct"
+                );
+
+                feedbackElement.textContent =
+                    "Σωστό! +10 XP";
+
+                addXP(10);
+
+            }
+
+            else {
+
+                selectedButton.classList.add(
+                    "wrong"
+                );
+
+                buttons[
+                    question.correct
+                ].classList.add(
+                    "correct"
+                );
+
+                feedbackElement.textContent =
+                    "Λάθος!";
+            }
+
+            setTimeout(() => {
+
+                currentQuestion++;
+
+                if (
+                    currentQuestion >=
+                    questions.length
+                ) {
+
+                    endGame();
+
+                }
+                else {
+
+                    showQuestion();
+
+                }
+
+            }, 900);
+        }
+
+
+        function endGame() {
+
+            gameBox.style.display = "none";
+
+            result.style.display = "block";
+
+            finalScore.textContent =
+                score;
+
+            earnedXP.textContent =
+                score * 10;
+        }
+
+
+        startGame();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Number Guess</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px 90px;
+            text-align: center;
+        }
+
+        .game-header {
+            margin-bottom: 35px;
+        }
+
+        .game-header h1 {
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            color: #aaaabd;
+            font-size: 18px;
+        }
+
+        .game-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+        }
+
+        .range {
+            color: #aaaabd;
+            margin-bottom: 25px;
+        }
+
+        .range strong {
+            color: #b98cff;
+        }
+
+        .number-input {
+            width: 180px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(185,140,255,0.4);
+            background: rgba(0,0,0,0.25);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            outline: none;
+        }
+
+        .number-input:focus {
+            border-color: #b98cff;
+        }
+
+        .game-button {
+            display: block;
+            margin: 18px auto 0;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .attempts {
+            margin-top: 25px;
+            color: #aaaabd;
+        }
+
+        .attempts strong {
+            color: #b98cff;
+        }
+
+        .feedback {
+            min-height: 30px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #b98cff;
+        }
+
+        .result {
+            display: none;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(185,140,255,0.3);
+            border-radius: 22px;
+            padding: 40px 30px;
+        }
+
+        .result h2 {
+            color: #b98cff;
+            margin-bottom: 20px;
+        }
+
+        .result p {
+            color: #aaaabd;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .earned-xp {
+            font-size: 28px;
+            font-weight: bold;
+            color: #b98cff;
+            margin: 20px 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #b98cff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <div>
+            <a href="index.html">Αρχική</a>
+            <a href="games.html">Παιχνίδια</a>
+            <a href="achievements.html">Επιτεύγματα</a>
+            <a href="profile.html">Προφίλ</a>
+        </div>
+    </nav>
+
+    <main class="game-page">
+
+        <section class="game-header">
+            <div class="small-title">MATHORIA PUZZLE</div>
+
+            <h1>Number Guess</h1>
+
+            <p>
+                Βρες τον κρυφό αριθμό με όσο λιγότερες προσπάθειες μπορείς!
+            </p>
+        </section>
+
+        <div class="game-box" id="gameBox">
+
+            <div class="range">
+                Ο αριθμός είναι από
+                <strong>1</strong>
+                έως
+                <strong>100</strong>.
+            </div>
+
+            <input
+                type="number"
+                id="guessInput"
+                class="number-input"
+                min="1"
+                max="100"
+                placeholder="Αριθμός"
+                autocomplete="off"
+            >
+
+            <button
+                class="game-button"
+                id="guessButton"
+            >
+                Μάντεψε
+            </button>
+
+            <div class="attempts">
+                Προσπάθειες:
+                <strong id="attempts">0</strong>
+            </div>
+
+            <div
+                class="feedback"
+                id="feedback"
+            ></div>
+
+        </div>
+
+        <div class="result" id="result">
+
+            <h2>Το βρήκες!</h2>
+
+            <p>
+                Ο σωστός αριθμός ήταν
+                <strong id="correctNumber"></strong>.
+            </p>
+
+            <p>
+                Το βρήκες σε
+                <strong id="finalAttempts"></strong>
+                προσπάθειες.
+            </p>
+
+            <div class="earned-xp">
+                +<span id="earnedXP">0</span> XP
+            </div>
+
+            <button
+                class="game-button"
+                onclick="startGame()"
+            >
+                Παίξε ξανά
+            </button>
+
+        </div>
+
+        <a href="games.html" class="back-link">
+            ← Επιστροφή στα παιχνίδια
+        </a>
+
+    </main>
+
+    <script>
+
+        let secretNumber = 0;
+        let attempts = 0;
+        let gameFinished = false;
+
+        const guessInput =
+            document.getElementById("guessInput");
+
+        const guessButton =
+            document.getElementById("guessButton");
+
+        const attemptsElement =
+            document.getElementById("attempts");
+
+        const feedback =
+            document.getElementById("feedback");
+
+        const gameBox =
+            document.getElementById("gameBox");
+
+        const result =
+            document.getElementById("result");
+
+        const correctNumber =
+            document.getElementById("correctNumber");
+
+        const finalAttempts =
+            document.getElementById("finalAttempts");
+
+        const earnedXP =
+            document.getElementById("earnedXP");
+
+
+        function startGame() {
+
+            secretNumber =
+                Math.floor(
+                    Math.random() * 100
+                ) + 1;
+
+            attempts = 0;
+            gameFinished = false;
+
+            attemptsElement.textContent = "0";
+
+            feedback.textContent = "";
+
+            guessInput.value = "";
+
+            gameBox.style.display = "block";
+            result.style.display = "none";
+
+            guessInput.focus();
+        }
+
+
+        function makeGuess() {
+
+            if (gameFinished) {
+                return;
+            }
+
+            const guess =
+                Number(guessInput.value);
+
+            if (
+                !guess ||
+                guess < 1 ||
+                guess > 100
+            ) {
+
+                feedback.textContent =
+                    "Βάλε έναν αριθμό από το 1 έως το 100.";
+
+                return;
+            }
+
+            attempts++;
+
+            attemptsElement.textContent =
+                attempts;
+
+            if (guess === secretNumber) {
+
+                finishGame();
+
+                return;
+            }
+
+            if (guess < secretNumber) {
+
+                feedback.textContent =
+                    "Ο αριθμός είναι μεγαλύτερος.";
+
+            }
+            else {
+
+                feedback.textContent =
+                    "Ο αριθμός είναι μικρότερος.";
+
+            }
+
+            guessInput.value = "";
+            guessInput.focus();
+        }
+
+
+        function finishGame() {
+
+            gameFinished = true;
+
+            /*
+             * Όσο λιγότερες προσπάθειες,
+             * τόσο περισσότερα XP.
+             */
+            let xp = 10;
+
+            if (attempts <= 3) {
+                xp = 50;
+            }
+            else if (attempts <= 5) {
+                xp = 40;
+            }
+            else if (attempts <= 8) {
+                xp = 30;
+            }
+            else if (attempts <= 12) {
+                xp = 20;
+            }
+
+            addXP(xp);
+
+            correctNumber.textContent =
+                secretNumber;
+
+            finalAttempts.textContent =
+                attempts;
+
+            earnedXP.textContent =
+                xp;
+
+            gameBox.style.display =
+                "none";
+
+            result.style.display =
+                "block";
+        }
+
+
+        guessButton.addEventListener(
+            "click",
+            makeGuess
+        );
+
+
+        guessInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+                    makeGuess();
+                }
+
+            }
+        );
+
+
+        startGame();
+
+    </script>
+
+</body>
+</html>

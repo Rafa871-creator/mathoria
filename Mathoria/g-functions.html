@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mathoria | Συναρτήσεις</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="progress.js"></script>
+
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question-number {
+            color: #aaaabd;
+            margin: 25px 0;
+        }
+
+        .question {
+            font-size: 32px;
+            margin: 40px 0;
+        }
+
+        .function {
+            color: #b98cff;
+            font-size: 30px;
+            margin: 20px 0;
+        }
+
+        input {
+            width: 150px;
+            padding: 14px;
+            border: 1px solid rgba(185,140,255,0.4);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #b98cff;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            background: #b98cff;
+            color: #0b0b1a;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #d0b5ff;
+        }
+
+        .result {
+            min-height: 30px;
+            margin-top: 25px;
+            color: #b98cff;
+            font-size: 18px;
+        }
+
+        .score {
+            margin-top: 20px;
+            color: #aaaabd;
+        }
+
+        .restart {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">MATHORIA</a>
+
+        <a href="g-gymnasiou.html" class="back">
+            ← Γ΄ Γυμνασίου
+        </a>
+    </nav>
+
+    <main class="game-container">
+
+        <div class="small-title">
+            MATHORIA
+        </div>
+
+        <h1>Συναρτήσεις</h1>
+
+        <div class="question-number" id="questionNumber">
+            Άσκηση 1 από 10
+        </div>
+
+        <div class="question">
+            Υπολόγισε την τιμή της συνάρτησης:
+        </div>
+
+        <div class="function" id="function">
+            f(x) = 2x + 1
+        </div>
+
+        <div id="valueText">
+            για x = 3
+        </div>
+
+        <br>
+
+        <input
+            type="number"
+            id="answer"
+            placeholder="Απάντηση"
+        >
+
+        <br>
+
+        <button onclick="checkAnswer()">
+            Έλεγχος
+        </button>
+
+        <div class="result" id="result"></div>
+
+        <div class="score">
+            Σκορ: <span id="score">0</span> / 100
+        </div>
+
+        <button
+            class="restart"
+            id="restart"
+            onclick="restartGame()"
+        >
+            Ξανά από την αρχή
+        </button>
+
+    </main>
+
+    <script>
+
+        const questions = [
+            {
+                function: "f(x) = 2x + 1",
+                value: "για x = 3",
+                answer: 7
+            },
+            {
+                function: "f(x) = x + 5",
+                value: "για x = 4",
+                answer: 9
+            },
+            {
+                function: "f(x) = 3x",
+                value: "για x = 5",
+                answer: 15
+            },
+            {
+                function: "f(x) = x - 4",
+                value: "για x = 10",
+                answer: 6
+            },
+            {
+                function: "f(x) = 2x + 3",
+                value: "για x = 4",
+                answer: 11
+            },
+            {
+                function: "f(x) = 4x - 2",
+                value: "για x = 3",
+                answer: 10
+            },
+            {
+                function: "f(x) = x + 8",
+                value: "για x = 2",
+                answer: 10
+            },
+            {
+                function: "f(x) = 5x",
+                value: "για x = 2",
+                answer: 10
+            },
+            {
+                function: "f(x) = 3x + 2",
+                value: "για x = 6",
+                answer: 20
+            },
+            {
+                function: "f(x) = 2x - 5",
+                value: "για x = 7",
+                answer: 9
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function showQuestion() {
+
+            const q = questions[currentQuestion];
+
+            document.getElementById("questionNumber").textContent =
+                `Άσκηση ${currentQuestion + 1} από 10`;
+
+            document.getElementById("function").textContent =
+                q.function;
+
+            document.getElementById("valueText").textContent =
+                q.value;
+
+            document.getElementById("answer").value = "";
+
+            document.getElementById("result").textContent = "";
+
+            document.getElementById("answer").focus();
+        }
+
+        function checkAnswer() {
+
+            const userAnswer =
+                Number(document.getElementById("answer").value);
+
+            const q = questions[currentQuestion];
+
+            if (userAnswer === q.answer) {
+
+                score += 10;
+                addXP(10);
+
+                document.getElementById("result").textContent =
+                    "Σωστό! +10 πόντοι";
+
+                document.getElementById("score").textContent =
+                    score;
+
+                setTimeout(() => {
+
+                    currentQuestion++;
+
+                    if (currentQuestion < questions.length) {
+
+                        showQuestion();
+
+                    } else {
+
+                        finishGame();
+
+                    }
+
+                }, 1000);
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    "Λάθος! Δοκίμασε ξανά.";
+            }
+        }
+
+        function finishGame() {
+
+            document.getElementById("questionNumber").textContent =
+                "Ολοκλήρωσες τις Συναρτήσεις!";
+
+            document.getElementById("question").textContent =
+                `Τελικό σκορ: ${score} / 100`;
+
+            document.getElementById("function").textContent = "";
+
+            document.getElementById("valueText").textContent = "";
+
+            document.getElementById("answer").style.display =
+                "none";
+
+            document.querySelector("main > button:not(.restart)")
+                .style.display = "none";
+
+            document.getElementById("result").textContent =
+                score === 100
+                ? "Τέλειο! Έκανες 10/10!"
+                : "Μπράβο! Δοκίμασε ξανά για καλύτερο σκορ.";
+
+            document.getElementById("restart").style.display =
+                "inline-block";
+        }
+
+        function restartGame() {
+
+            currentQuestion = 0;
+            score = 0;
+
+            document.getElementById("score").textContent =
+                score;
+
+            document.getElementById("answer").style.display =
+                "inline-block";
+
+            document.querySelector("main > button:not(.restart)")
+                .style.display = "inline-block";
+
+            document.getElementById("restart").style.display =
+                "none";
+
+            showQuestion();
+        }
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+
+        });
+
+        showQuestion();
+
+    </script>
+
+</body>
+</html>
